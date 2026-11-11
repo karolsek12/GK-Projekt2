@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,35 +10,61 @@ namespace GK_Projekt2.Rendering
     public class Renderer
     {
 
-        private Graphics _graphics;
         private PictureBox _box;
 
-        private Bitmap _current;
-        private Bitmap _unused;
+        private Bitmap[] _bitmap;
+        private int _flip = 0;
 
 
-        public Renderer(Graphics graphics, PictureBox box)
+        public Renderer(PictureBox box)
         {
-            _graphics = graphics;
             _box = box;
-            _current = new Bitmap(box.Width, box.Height);
-            _unused = new Bitmap(box.Width, box.Height);
+            _bitmap = new Bitmap[2];
+            _bitmap[0] = new Bitmap(box.Width, box.Height);
+            _bitmap[1] = new Bitmap(box.Width, box.Height);
 
+            for (int Xcount = 0; Xcount < _bitmap[0].Width/2; Xcount++)
+            {
+                for (int Ycount = 0; Ycount < _bitmap[0].Height/3; Ycount++)
+                {
+                    _bitmap[0].SetPixel(Xcount, Ycount, Color.Black);
+                }
+            }
 
-            Render();
+            for (int Xcount = 0; Xcount < _bitmap[1].Width / 2; Xcount++)
+            {
+                for (int Ycount = 0; Ycount < _bitmap[1].Height / 3; Ycount++)
+                {
+                    _bitmap[1].SetPixel(Xcount, Ycount, Color.Pink);
+                }
+            }
+
         }
 
-
-        public void SwapBuffers()
+        private Bitmap GetUnusedBitmap()
         {
-            (_current, _unused) = (_unused, _current);
+            Bitmap bm = _bitmap[1 - _flip];
+
+            return bm;
+        }
+
+        private Bitmap GetCurrentBitmapClone()
+        {
+            Bitmap bm = _bitmap[_flip];
+
+            _flip = 1-_flip;
+            return (Bitmap)bm.Clone();
         }
 
         public void Render()
         {
-             SwapBuffers();
-            _box.Image = _current;
+            if(_box.Image != null)
+            {
+                _box.Image.Dispose();
+            }
+            _box.Image = GetCurrentBitmapClone();
             _box.Refresh();
+              
         }
     }
 

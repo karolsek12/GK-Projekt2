@@ -28,62 +28,75 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.mainLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.graphicsBox = new System.Windows.Forms.PictureBox();
-            this.sidePanel = new System.Windows.Forms.Panel();
-            this.mainLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.graphicsBox)).BeginInit();
-            this.SuspendLayout();
+            mainLayout = new TableLayoutPanel();
+            graphicsBox = new PictureBox();
+            sidePanel = new Panel();
+            button1 = new Button();
+            mainLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)graphicsBox).BeginInit();
+            sidePanel.SuspendLayout();
+            SuspendLayout();
             // 
             // mainLayout
             // 
-            this.mainLayout.ColumnCount = 2;
-            this.mainLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.mainLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.mainLayout.Controls.Add(this.graphicsBox, 0, 0);
-            this.mainLayout.Controls.Add(this.sidePanel, 1, 0);
-            this.mainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainLayout.Location = new System.Drawing.Point(0, 0);
-            this.mainLayout.Margin = new System.Windows.Forms.Padding(0);
-            this.mainLayout.Name = "mainLayout";
-            this.mainLayout.RowCount = 1;
-            this.mainLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.mainLayout.Size = new System.Drawing.Size(1000, 600);
-            this.mainLayout.TabIndex = 0;
+            mainLayout.ColumnCount = 2;
+            mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80F));
+            mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            mainLayout.Controls.Add(graphicsBox, 0, 0);
+            mainLayout.Controls.Add(sidePanel, 1, 0);
+            mainLayout.Dock = DockStyle.Fill;
+            mainLayout.Location = new Point(0, 0);
+            mainLayout.Margin = new Padding(0);
+            mainLayout.Name = "mainLayout";
+            mainLayout.RowCount = 1;
+            mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            mainLayout.Size = new Size(1000, 600);
+            mainLayout.TabIndex = 0;
             // 
             // graphicsBox
             // 
-            this.graphicsBox.BackColor = System.Drawing.Color.White;
-            this.graphicsBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.graphicsBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graphicsBox.Location = new System.Drawing.Point(0, 0);
-            this.graphicsBox.Margin = new System.Windows.Forms.Padding(0);
-            this.graphicsBox.Name = "graphicsBox";
-            this.graphicsBox.Size = new System.Drawing.Size(800, 600);
-            this.graphicsBox.TabIndex = 1;
-            this.graphicsBox.TabStop = false;
+            graphicsBox.BackColor = Color.White;
+            graphicsBox.BorderStyle = BorderStyle.FixedSingle;
+            graphicsBox.Dock = DockStyle.Fill;
+            graphicsBox.Location = new Point(0, 0);
+            graphicsBox.Margin = new Padding(0);
+            graphicsBox.Name = "graphicsBox";
+            graphicsBox.Size = new Size(800, 600);
+            graphicsBox.TabIndex = 1;
+            graphicsBox.TabStop = false;
             // 
             // sidePanel
             // 
-            this.sidePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sidePanel.Location = new System.Drawing.Point(800, 0);
-            this.sidePanel.Margin = new System.Windows.Forms.Padding(0);
-            this.sidePanel.Name = "sidePanel";
-            this.sidePanel.Size = new System.Drawing.Size(200, 600);
-            this.sidePanel.TabIndex = 2;
+            sidePanel.Controls.Add(button1);
+            sidePanel.Dock = DockStyle.Fill;
+            sidePanel.Location = new Point(800, 0);
+            sidePanel.Margin = new Padding(0);
+            sidePanel.Name = "sidePanel";
+            sidePanel.Size = new Size(200, 600);
+            sidePanel.TabIndex = 2;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(30, 34);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 0;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 600);
-            this.Controls.Add(this.mainLayout);
-            this.MinimumSize = new System.Drawing.Size(500, 300);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.mainLayout.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.graphicsBox)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1000, 600);
+            Controls.Add(mainLayout);
+            MinimumSize = new Size(500, 300);
+            Name = "Form1";
+            Text = "Form1";
+            mainLayout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)graphicsBox).EndInit();
+            sidePanel.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
@@ -91,5 +104,6 @@
         private System.Windows.Forms.TableLayoutPanel mainLayout;
         private System.Windows.Forms.PictureBox graphicsBox;
         private System.Windows.Forms.Panel sidePanel;
+        private Button button1;
     }
 }

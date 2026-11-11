@@ -11,18 +11,27 @@ namespace GK_Projekt2
         {
             InitializeComponent();
             _renderer = null;
-            graphicsBox.Paint += GraphicsBox_Paint; ;
+            graphicsBox.Paint += GraphicsBox_Paint;
+            button1.Click += Button1_Click;
+        }
+
+        private void Button1_Click(object? sender, EventArgs e)
+        {
+            if(_renderer != null)
+                _renderer.Render();
         }
 
         private void GraphicsBox_Paint(object? sender, PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
+            if(_renderer == null)
+            {
+                
 
-            g.ScaleTransform(1, -1);
-
-            g.TranslateTransform(graphicsBox.Width / 2, -graphicsBox.Height / 2);
-
-            _renderer = new Renderer(g,graphicsBox);  
+                _renderer = new Renderer(graphicsBox);
+            }
+              
         }
+
+        
     }
 }
