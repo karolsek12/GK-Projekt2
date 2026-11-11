@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GK_Projekt2.Components;
 
 namespace GK_Projekt2.Rendering
 {
@@ -15,6 +16,9 @@ namespace GK_Projekt2.Rendering
         private Bitmap[] _bitmap;
         private int _flip = 0;
 
+        private BezierSurface _bezierSurface;
+        private Mesh _mesh;
+        private TurboBitmapHandler _tbh;
 
         public Renderer(PictureBox box)
         {
@@ -39,6 +43,11 @@ namespace GK_Projekt2.Rendering
                 }
             }
 
+            _bezierSurface = new BezierSurface(Constants.TestControlPoints);
+
+            _mesh = new Mesh(_bezierSurface.GetTriangles(2));
+            _tbh = new TurboBitmapHandler(box.Width, box.Height, _mesh);
+
         }
 
         private Bitmap GetUnusedBitmap()
@@ -48,21 +57,23 @@ namespace GK_Projekt2.Rendering
             return bm;
         }
 
-        private Bitmap GetCurrentBitmapClone()
+        private Bitmap GetCurrentBitmap()
         {
             Bitmap bm = _bitmap[_flip];
 
-            _flip = 1-_flip;
-            return (Bitmap)bm.Clone();
+            return bm;
+        }
+
+        private void Flip()
+        {
+            _flip = 1 - _flip;
         }
 
         public void Render()
         {
-            if(_box.Image != null)
-            {
-                _box.Image.Dispose();
-            }
-            _box.Image = GetCurrentBitmapClone();
+            _tbh.Render(GetUnusedBitmap());
+            Flip();
+            _box.Image = GetCurrentBitmap();
             _box.Refresh();
               
         }

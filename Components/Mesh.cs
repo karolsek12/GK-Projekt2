@@ -6,8 +6,21 @@ using System.Threading.Tasks;
 
 namespace GK_Projekt2.Components
 {
-    public struct Mesh
+    public class Mesh
     {
-        private List<Vertex> _triangles;
+        private List<Triangle> _triangles;
+
+        public Mesh(List<Triangle> triangles)
+        {
+            _triangles = triangles;
+        }
+
+        public List<Triangle> Triangles
+        {
+            get
+            {
+                return _triangles;
+            }
+        }
     }
 }

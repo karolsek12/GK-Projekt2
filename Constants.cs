@@ -33,5 +33,6 @@ namespace GK_Projekt2
 
             ];
 
+        public static double MaxDistance = 1.5;
     }
 }

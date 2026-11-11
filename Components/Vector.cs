@@ -26,5 +26,45 @@ namespace GK_Projekt2.Components
             _y = v._y;
             _z = v._z;
         }
+
+        public Vector(Point<T> from, Point<T> to)
+        {
+            _x = to.X - from.X;
+            _y = to.Y - from.Y;
+            _z = to.Z - from.Z;
+        }
+
+        public T X { get { return _x; } }
+        public T Y { get { return _y; } }
+        public T Z { get { return _z; } }
+
+
+        public void Add(Vector<T> p)
+        {
+            _x += p.X;
+            _y += p.Y;
+        }
+
+        public void Mult(T a)
+        {
+            _x *= a;
+            _y *= a;
+        }
+
+        public void AddMultiplied(Vector<T> p, T a)
+        {
+            _x += p.X * a;
+            _y += p.Y * a;
+        }
+
+        public static Vector<T> GetCrossProduct(Vector<T> a, Vector<T> b)
+        {
+           
+            T x = a.Y * b.Z - a.Z * b.Y;
+            T y = a.Z*b.X  - a.X*b.Z;
+            T z = a.X*b.Y - a.Y*b.X;
+
+            return new Vector<T>(x,y,z);
+        }
     }
 }

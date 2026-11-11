@@ -12,5 +12,12 @@ namespace GK_Projekt2.Components
         private Vertex B;
         private Vertex C;
 
+        public Triangle(Vertex a, Vertex b, Vertex c)
+        {
+            A = a;
+            B = b;
+            C = c;
+        }
+
     }
 }
