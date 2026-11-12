@@ -35,5 +35,14 @@ namespace GK_Projekt2.Components
             _afterNormal = new Vector<double>(Normal);
         }
 
+
+        public Point<double> AfterP
+        {
+            get
+            {
+                return _afterP;
+            }
+        }
+
     }
 }

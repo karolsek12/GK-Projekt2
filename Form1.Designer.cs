@@ -50,7 +50,7 @@
             mainLayout.Name = "mainLayout";
             mainLayout.RowCount = 1;
             mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            mainLayout.Size = new Size(1000, 600);
+            mainLayout.Size = new Size(876, 700);
             mainLayout.TabIndex = 0;
             // 
             // graphicsBox
@@ -61,25 +61,26 @@
             graphicsBox.Location = new Point(0, 0);
             graphicsBox.Margin = new Padding(0);
             graphicsBox.Name = "graphicsBox";
-            graphicsBox.Size = new Size(800, 600);
+            graphicsBox.Size = new Size(700, 700);
             graphicsBox.TabIndex = 1;
             graphicsBox.TabStop = false;
+            graphicsBox.Click += graphicsBox_Click;
             // 
             // sidePanel
             // 
             sidePanel.Controls.Add(button1);
             sidePanel.Dock = DockStyle.Fill;
-            sidePanel.Location = new Point(800, 0);
+            sidePanel.Location = new Point(700, 0);
             sidePanel.Margin = new Padding(0);
             sidePanel.Name = "sidePanel";
-            sidePanel.Size = new Size(200, 600);
+            sidePanel.Size = new Size(176, 700);
             sidePanel.TabIndex = 2;
             // 
             // button1
             // 
             button1.Location = new Point(30, 34);
             button1.Name = "button1";
-            button1.Size = new Size(75, 23);
+            button1.Size = new Size(72, 23);
             button1.TabIndex = 0;
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
@@ -88,9 +89,10 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1000, 600);
+            ClientSize = new Size(876, 700);
             Controls.Add(mainLayout);
-            MinimumSize = new Size(500, 300);
+            MaximumSize = new Size(892, 739);
+            MinimumSize = new Size(892, 739);
             Name = "Form1";
             Text = "Form1";
             mainLayout.ResumeLayout(false);

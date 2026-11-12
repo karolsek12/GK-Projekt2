@@ -27,25 +27,19 @@ namespace GK_Projekt2.Rendering
             _bitmap[0] = new Bitmap(box.Width, box.Height);
             _bitmap[1] = new Bitmap(box.Width, box.Height);
 
-            for (int Xcount = 0; Xcount < _bitmap[0].Width/2; Xcount++)
+            using (Graphics g = Graphics.FromImage(_bitmap[0]))
             {
-                for (int Ycount = 0; Ycount < _bitmap[0].Height/3; Ycount++)
-                {
-                    _bitmap[0].SetPixel(Xcount, Ycount, Color.Black);
-                }
+                g.Clear(Color.White);
             }
 
-            for (int Xcount = 0; Xcount < _bitmap[1].Width / 2; Xcount++)
+            using (Graphics g = Graphics.FromImage(_bitmap[1]))
             {
-                for (int Ycount = 0; Ycount < _bitmap[1].Height / 3; Ycount++)
-                {
-                    _bitmap[1].SetPixel(Xcount, Ycount, Color.Pink);
-                }
+                g.Clear(Color.White);
             }
 
             _bezierSurface = new BezierSurface(Constants.TestControlPoints);
 
-            _mesh = new Mesh(_bezierSurface.GetTriangles(2));
+            _mesh = new Mesh(_bezierSurface.GetTriangles(32));
             _tbh = new TurboBitmapHandler(box.Width, box.Height, _mesh);
 
         }

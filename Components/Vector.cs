@@ -43,18 +43,21 @@ namespace GK_Projekt2.Components
         {
             _x += p.X;
             _y += p.Y;
+            _z += p.Z;
         }
 
         public void Mult(T a)
         {
             _x *= a;
             _y *= a;
+            _z *= a;
         }
 
         public void AddMultiplied(Vector<T> p, T a)
         {
             _x += p.X * a;
             _y += p.Y * a;
+            _z += p.Z * a;
         }
 
         public static Vector<T> GetCrossProduct(Vector<T> a, Vector<T> b)

@@ -17,21 +17,24 @@ namespace GK_Projekt2
 
         private void Button1_Click(object? sender, EventArgs e)
         {
-            if(_renderer != null)
+            if (_renderer != null)
                 _renderer.Render();
         }
 
         private void GraphicsBox_Paint(object? sender, PaintEventArgs e)
         {
-            if(_renderer == null)
+            if (_renderer == null)
             {
-                
+
 
                 _renderer = new Renderer(graphicsBox);
             }
-              
+
         }
 
-        
+        private void graphicsBox_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
