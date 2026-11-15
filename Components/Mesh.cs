@@ -22,5 +22,13 @@ namespace GK_Projekt2.Components
                 return _triangles;
             }
         }
+
+        public void RotateVertices(Matrix3<double> rot)
+        {
+            foreach (Triangle t in _triangles)
+            {
+                t.RotateVertices(rot);
+            }
+        }
     }
 }

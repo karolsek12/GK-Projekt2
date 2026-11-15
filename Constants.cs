@@ -34,5 +34,9 @@ namespace GK_Projekt2
             ];
 
         public static double MaxDistance = 1.5;
+
+        public static double MouseSensivity = 0.1;
+
+        public static double SmallestMouseChange = 10.0;
     }
 }

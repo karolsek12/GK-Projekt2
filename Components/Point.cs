@@ -34,6 +34,13 @@ namespace GK_Projekt2.Components
 
         }
 
+        public Point(Vector<T> v)
+        {
+            _x = v.X;
+            _y = v.Y;
+            _z = v.Z;
+        }
+
         public T X { get { return _x; }}
         public T Y { get { return _y; }}
         public T Z { get { return _z; }}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GK_Projekt2.Components
 {
-    public struct Vertex
+    public class Vertex
     {
         private Point<double> _beforeP;
         private Vector<double> _beforeTangentu;
@@ -44,5 +44,13 @@ namespace GK_Projekt2.Components
             }
         }
 
+        public void Rotate(Matrix3<double> rot)
+        {
+            Vector<double> temp = new Vector<double>(_beforeP);
+
+            temp = rot * temp;
+
+            _afterP = new Point<double>(temp);
+        }
     }
 }

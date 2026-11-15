@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GK_Projekt2.Algorithms;
 using GK_Projekt2.Components;
 
 namespace GK_Projekt2.Rendering
@@ -19,6 +20,7 @@ namespace GK_Projekt2.Rendering
         private BezierSurface _bezierSurface;
         private Mesh _mesh;
         private TurboBitmapHandler _tbh;
+        private Matrix3<double> _rotation;
 
         public Renderer(PictureBox box)
         {
@@ -26,6 +28,7 @@ namespace GK_Projekt2.Rendering
             _bitmap = new Bitmap[2];
             _bitmap[0] = new Bitmap(box.Width, box.Height);
             _bitmap[1] = new Bitmap(box.Width, box.Height);
+            _rotation = MatrixCreation.GetRot(0,0,0);
 
             using (Graphics g = Graphics.FromImage(_bitmap[0]))
             {
@@ -39,7 +42,7 @@ namespace GK_Projekt2.Rendering
 
             _bezierSurface = new BezierSurface(Constants.TestControlPoints);
 
-            _mesh = new Mesh(_bezierSurface.GetTriangles(32));
+            _mesh = new Mesh(_bezierSurface.GetTriangles(4));
             _tbh = new TurboBitmapHandler(box.Width, box.Height, _mesh);
 
         }
@@ -70,6 +73,14 @@ namespace GK_Projekt2.Rendering
             _box.Image = GetCurrentBitmap();
             _box.Refresh();
               
+        }
+
+        public void SetRotation(double alpha,double beta, double gamma)
+        {
+            Matrix3<double> change = MatrixCreation.GetRot(alpha, beta, gamma);
+
+            _rotation = change*_rotation;
+            _mesh.RotateVertices(_rotation);
         }
     }
 

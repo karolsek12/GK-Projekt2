@@ -7,7 +7,7 @@ using GK_Projekt2.Algorithms;
 
 namespace GK_Projekt2.Components
 {
-    public struct Triangle
+    public class Triangle
     {
         private Vertex A;
         private Vertex B;
@@ -48,7 +48,12 @@ namespace GK_Projekt2.Components
             return z;
         }
 
-
+        public void RotateVertices(Matrix3<double> rot)
+        {
+            A.Rotate(rot);
+            B.Rotate(rot);
+            C.Rotate(rot);
+        }
     }
 
     public struct DiscreteTriangle

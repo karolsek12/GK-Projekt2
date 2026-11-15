@@ -64,7 +64,6 @@
             graphicsBox.Size = new Size(700, 700);
             graphicsBox.TabIndex = 1;
             graphicsBox.TabStop = false;
-            graphicsBox.Click += graphicsBox_Click;
             // 
             // sidePanel
             // 
