@@ -100,6 +100,15 @@ namespace GK_Projekt2.Components
             }
         }
 
+        public void MultByMatrix(Matrix3<T> m)
+        {
+            Vector<T> result = m * this;
+
+            _x = result.X;
+            _y = result.Y;
+            _z = result.Z;
+        }
+
         public static Vector<T>  operator *(Matrix3<T> m, Vector<T> v){
 
             Vector<T> result = new Vector<T>();
@@ -112,6 +121,13 @@ namespace GK_Projekt2.Components
             return result;
         }
 
+        public static T operator*(Vector<T> v1, Vector<T> v2)
+        {
+            return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+        }
+
+
+
     }
 
     public static class VectorExtensions
@@ -120,5 +136,14 @@ namespace GK_Projekt2.Components
         {
             return Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
         }
+
+        public static void Normalise(this Vector<double> v)
+        {
+            double len = v.Length();
+
+            v.Mult(1 / len);
+
+        }
+            
     }
 }

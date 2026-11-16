@@ -63,8 +63,8 @@ namespace GK_Projekt2.Rendering
                     zs[i] = t.InterpolateZ(pts[i], dt);
 
 
-                    _colors[pts[i].X, pts[i].Y] = silly[pos];
-                    //_colors[pts[i].X, pts[i].Y] = (byte)(255*(zs[i]/0.35));
+                    //_colors[pts[i].X, pts[i].Y] = silly[pos];
+                    _colors[pts[i].X, pts[i].Y] = (byte)(255*(zs[i]/0.35));
                 }
 
                 pos++;

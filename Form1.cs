@@ -1,3 +1,4 @@
+using GK_Projekt2.Algorithms;
 using GK_Projekt2.Rendering;
 
 
@@ -24,13 +25,18 @@ namespace GK_Projekt2
 
         private void GraphicsBox_MouseMove(object? sender, MouseEventArgs e)
         {
-            if (!_held)
+            if (!_held || _lastHit == null)
                 return;
             Point cur = e.Location;
             double[] angleChange = new double[3];
 
+            if(MouseToRotation.GetRotation(_lastHit.Value, cur,out angleChange))
+            {
+                _renderer!.SetRotation(angleChange[0], angleChange[1], angleChange[2]);
+                _lastHit = cur;
+            }
 
-
+            
         }
 
         private void GraphicsBox_MouseUp(object? sender, MouseEventArgs e)
@@ -38,6 +44,7 @@ namespace GK_Projekt2
             if (_held)
             {
                 _lastHit = null;
+                _held = false;
             }
         }
 

@@ -81,6 +81,7 @@ namespace GK_Projekt2.Rendering
 
             _rotation = change*_rotation;
             _mesh.RotateVertices(_rotation);
+            Render();
         }
     }
 
