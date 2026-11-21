@@ -31,10 +31,8 @@
             mainLayout = new TableLayoutPanel();
             graphicsBox = new PictureBox();
             sidePanel = new Panel();
-            button1 = new Button();
             mainLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)graphicsBox).BeginInit();
-            sidePanel.SuspendLayout();
             SuspendLayout();
             // 
             // mainLayout
@@ -62,27 +60,18 @@
             graphicsBox.Margin = new Padding(0);
             graphicsBox.Name = "graphicsBox";
             graphicsBox.Size = new Size(700, 700);
+            graphicsBox.SizeMode = PictureBoxSizeMode.StretchImage;
             graphicsBox.TabIndex = 1;
             graphicsBox.TabStop = false;
             // 
             // sidePanel
             // 
-            sidePanel.Controls.Add(button1);
             sidePanel.Dock = DockStyle.Fill;
             sidePanel.Location = new Point(700, 0);
             sidePanel.Margin = new Padding(0);
             sidePanel.Name = "sidePanel";
             sidePanel.Size = new Size(176, 700);
             sidePanel.TabIndex = 2;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(30, 34);
-            button1.Name = "button1";
-            button1.Size = new Size(72, 23);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -96,7 +85,6 @@
             Text = "Form1";
             mainLayout.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)graphicsBox).EndInit();
-            sidePanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -105,6 +93,5 @@
         private System.Windows.Forms.TableLayoutPanel mainLayout;
         private System.Windows.Forms.PictureBox graphicsBox;
         private System.Windows.Forms.Panel sidePanel;
-        private Button button1;
     }
 }

@@ -44,6 +44,38 @@ namespace GK_Projekt2.Components
             }
         }
 
+        public Vector<double> AfterTangentu
+        {
+            get
+            {
+                return _afterTangentu;
+            }
+        }
+
+        public Vector<double> AfterTangetnv
+        {
+            get
+            {
+                return _afterTangentv;
+            }
+        }
+
+        public Vector<double> AfterNormal
+        {
+            get
+            {
+                return _afterNormal;
+            }
+        }
+
+        public Point<double> UV
+        {
+            get
+            {
+                return new Point<double>(_u, _v, 0);
+            }
+        }
+
         public void Rotate(Matrix3<double> rot)
         {
             Vector<double> temp = new Vector<double>(_beforeP);
@@ -51,6 +83,18 @@ namespace GK_Projekt2.Components
             temp = rot * temp;
 
             _afterP = new Point<double>(temp);
+
+            temp = new Vector<double>(_beforeTangentu);
+
+            _afterTangentu = new Vector<double>(temp);
+
+            temp = new Vector<double>(_beforeTangentv);
+
+            _afterTangentv = new Vector<double>(temp);
+
+            temp = new Vector<double>(_beforeNormal);
+
+            _afterNormal = new Vector<double>(temp);
         }
     }
 }

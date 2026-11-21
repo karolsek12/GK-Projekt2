@@ -9,10 +9,12 @@ namespace GK_Projekt2.Components
     public class Mesh
     {
         private List<Triangle> _triangles;
+        private ColorInfo _ci;
 
-        public Mesh(List<Triangle> triangles)
+        public Mesh(List<Triangle> triangles, ColorInfo ci)
         {
             _triangles = triangles;
+            _ci = ci;
         }
 
         public List<Triangle> Triangles
@@ -29,6 +31,11 @@ namespace GK_Projekt2.Components
             {
                 t.RotateVertices(rot);
             }
+        }
+
+        public ColorInfo CI
+        {
+            get { return _ci; }
         }
     }
 }

@@ -67,5 +67,28 @@ namespace GK_Projekt2.Components
             _z += p.Z * a;
         }
 
+        public T this[int id]
+        {
+            get
+            {
+                switch (id)
+                {
+                    case 0: return _x;
+                    case 1: return _y;
+                    case 2: return _z;
+                }
+                throw new ArgumentOutOfRangeException();
+            }
+            set
+            {
+                switch (id)
+                {
+                    case 0: _x = value; break;
+                    case 1: _y = value; break;
+                    case 2: _z = value; break;
+                }
+                return;
+            }
+        }
     }
 }

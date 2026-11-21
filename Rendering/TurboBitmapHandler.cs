@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
@@ -13,83 +14,80 @@ namespace GK_Projekt2.Rendering
     {
         private int _width;
         private int _height;
-        private Mesh _mesh;
 
-        private byte[,] _colors;
+        private Point<double>[,] _colors;
         private double[,] _zBuffer;
 
-        public TurboBitmapHandler(int width, int height,Mesh mesh) {
+        public TurboBitmapHandler(int width, int height) {
         
             _width = width;
             _height = height;
-            _colors = new byte[width,height];
+            _colors = new Point<double>[width,height];
             _zBuffer = new double[width,height];
-            _mesh = mesh;
             
         }
 
-        public void Render(Bitmap bm)
+        public void Render(Bitmap bm,Mesh mesh,LightInfo li)
         {
+
             for (int x = 0; x < _width; x++)
             {
                 for(int y = 0; y < _height; y++)
                 {
-                    _colors[x, y] = 255;
+                    _colors[x, y] = new Point<double>(1.0,1.0,1.0);
                     _zBuffer[x, y] = double.MinValue;
                 }
             }
 
-            List<Triangle> triangles = _mesh.Triangles;
+            List<Triangle> triangles = mesh.Triangles;
 
             DiscreteTriangle dt;
             List<Point<int>> pts;
-            Random r = new Random();
-            byte[] silly = new byte[triangles.Count];
-            int pos = 0;
-            double[] zs = new double[1];
-
-            r.NextBytes(silly);
-
-
+            Vector<double> normal;
+            Point<double> pos;
+            Point<double> uv;
+          
             foreach (Triangle t in triangles)
             {
-                dt = new DiscreteTriangle(t.Points.Select(v => ToDiscrete(v)).ToArray());
+                dt = new DiscreteTriangle(ToDiscrete(t.Points));
 
                 pts = FillTriangleVertexSort.FillTriangle(dt);
-                zs = new double[pts.Count];
 
                 for(int i = 0; i < pts.Count; i++)
                 {
-                    zs[i] = t.InterpolateZ(pts[i], dt);
+                    t.Interpolate(pts[i], dt);
 
+                    pos = t.InterpolatePos();   
 
-                    //_colors[pts[i].X, pts[i].Y] = silly[pos];
-                    _colors[pts[i].X, pts[i].Y] = (byte)(255*(zs[i]/0.35));
+                    if (pos.Z >= _zBuffer[pts[i].X, pts[i].Y])
+                    {
+                        _zBuffer[pts[i].X, pts[i].Y] = pos.Z;
+                        uv = t.InterpolateUV();
+                        normal = t.InterpolateNormal();
+                        _colors[pts[i].X, pts[i].Y] = Algorithms.LightCalculation.GetColor(pos, uv[0], uv[1], normal, mesh.CI, li);
+                    }
+                    
                 }
-
-                pos++;
             }
-
             
-
+           
             WriteToBitmap(bm);
         }
 
         private void WriteToBitmap(Bitmap bm)
         {
             Rectangle rect = new Rectangle(0, 0, _width, _height);
+
             BitmapData bmData = bm.LockBits(rect, ImageLockMode.ReadWrite, bm.PixelFormat);
 
             int bytesPerPixel = Image.GetPixelFormatSize(bm.PixelFormat) / 8;
             int stride = bmData.Stride;
             int id;
-            double z;
 
             unsafe
             {
                 byte* start = (byte*)bmData.Scan0;
                 byte* curline = start;
-                byte color;
 
                 for (int y = 0; y < _height; y++)
                 {
@@ -98,11 +96,10 @@ namespace GK_Projekt2.Rendering
                     {
                         id = x * bytesPerPixel;
 
-                        color = _colors[x, y];
 
-                        curline[id] = color;
-                        curline[id + 1] = color;
-                        curline[id + 2] = color;
+                        curline[id] = (byte)(_colors[x,y][0]*255);
+                        curline[id + 1] = (byte)(_colors[x, y][1] * 255);
+                        curline[id + 2] = (byte)(_colors[x, y][2] * 255);
                     }
                     curline += stride;
                 }
@@ -111,14 +108,20 @@ namespace GK_Projekt2.Rendering
             
         }
 
-        public Point<int> ToDiscrete(Point<double> d)
+        public Point<int>[] ToDiscrete(Point<double>[] real)
         {
-            Point<int> p = new Point<int>();
+            Point<int>[] discrete = new Point<int>[3];
 
-            int x = (int)(_width * 0.5*(1.0 + d.X/Constants.MaxDistance));
-            int y = (int)(_height * 0.5*(1.0 + d.Y / Constants.MaxDistance));
 
-            return new Point<int>(x, y, 0);
+            for(int i = 0; i < 3; i++)
+            {
+                int x = (int)(_width * 0.5 * (1.0 + real[i].X / Constants.MaxDistance));
+                int y = (int)(_height * 0.5 * (1.0 + real[i].Y / Constants.MaxDistance));
+                discrete[i] = new Point<int>(x, y, 0);
+            }
+
+
+            return discrete;
         }
     }
 }

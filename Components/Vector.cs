@@ -137,7 +137,7 @@ namespace GK_Projekt2.Components
             return Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
         }
 
-        public static void Normalise(this Vector<double> v)
+        public static void Normalise(this ref Vector<double> v)
         {
             double len = v.Length();
 

@@ -31,8 +31,6 @@ namespace GK_Projekt2.Algorithms
 
             RotateBy90(ref v);
 
-            v.Normalise();
-
             double alpha = MaxAngle * v.X;
             double beta = MaxAngle * v.Y;
             double gamma = MaxAngle * v.Z;

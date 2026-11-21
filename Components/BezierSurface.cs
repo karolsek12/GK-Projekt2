@@ -60,17 +60,17 @@ namespace GK_Projekt2.Components
                                 Bx[wi, i] * Bxless[wj, j]
                                 );
 
-                            vv[i, j].Mult(3.0);
-
                             vu[i,j].AddMultiplied(new Vector<double>(
                                 _controlPoints[(wj+1) * 4 + wi], _controlPoints[wj * 4 + wi]),
                                 Bxless[wj, i] * Bx[wi, j]
                                 );
-
-                            vu[i, j].Mult(3.0);
+                            
                         }
 
                     }
+
+                    vv[i, j].Mult(3.0);
+                    vu[i, j].Mult(3.0);
 
                     vert[i, j] = new Vertex(
                         u,v,

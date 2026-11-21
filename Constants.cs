@@ -33,10 +33,27 @@ namespace GK_Projekt2
 
             ];
 
+        public static List<Point<double>> TestLightControlPoints = [
+
+            new Point<double>(-0.5,0,1),
+            new Point<double>(0,-0.5,1),
+            new Point<double>(0.5,0,1),
+            new Point<double>(0,0.5,1),
+            new Point<double>(-0.5,0,1),
+
+            ];
+
+
         public static double MaxDistance = 1.5;
 
         public static double SmallestMouseChange = 10.0;
 
         public static double MaxAngleChange = Math.PI / 1000;
+
+        public static int Cooldown = 10;
+
+        public static double OneTick = Cooldown/100.0;
+
+        public static double CycleTime = 5.0; 
     }
 }

@@ -2,25 +2,39 @@ using GK_Projekt2.Algorithms;
 using GK_Projekt2.Rendering;
 
 
+
 namespace GK_Projekt2
 {
+    using WTimer = System.Windows.Forms.Timer;
     public partial class Form1 : Form
     {
-        private Renderer? _renderer;
+        private Renderer _renderer;
         private bool _held = false;
         private Point? _lastHit;
-
+        private WTimer _timer;
 
         public Form1()
         {
             InitializeComponent();
             _lastHit = null;
-            _renderer = null;
-            graphicsBox.Paint += GraphicsBox_Paint;
-            button1.Click += Button1_Click;
+            _renderer = new Renderer(graphicsBox);
+
             graphicsBox.MouseDown += GraphicsBox_MouseDown;
             graphicsBox.MouseUp += GraphicsBox_MouseUp;
             graphicsBox.MouseMove += GraphicsBox_MouseMove;
+
+            _timer = new WTimer
+            {
+                Interval = Constants.Cooldown
+            };
+
+            _timer.Tick += ClockTick;
+            _timer.Enabled = true;
+        }
+
+        private void ClockTick(object? sender, EventArgs e)
+        {
+            _renderer.Render();
         }
 
         private void GraphicsBox_MouseMove(object? sender, MouseEventArgs e)
@@ -57,22 +71,6 @@ namespace GK_Projekt2
             }
         }
 
-        private void Button1_Click(object? sender, EventArgs e)
-        {
-            if (_renderer != null)
-                _renderer.Render();
-        }
-
-        private void GraphicsBox_Paint(object? sender, PaintEventArgs e)
-        {
-            if (_renderer == null)
-            {
-
-
-                _renderer = new Renderer(graphicsBox);
-            }
-
-        }
 
     }
 }

@@ -13,6 +13,10 @@ namespace GK_Projekt2.Components
         private Vertex B;
         private Vertex C;
 
+        private double _alpha;
+        private double _beta;
+        private double _gamma;
+
         public Triangle(Vertex a, Vertex b, Vertex c)
         {
             A = a;
@@ -28,7 +32,9 @@ namespace GK_Projekt2.Components
             }
         }
 
-        public double InterpolateZ(Point<int> target,  DiscreteTriangle dt)
+
+
+        public void Interpolate(Point<int> target, DiscreteTriangle dt)
         {
             double full = DiscreteTriangleArea.GetArea(dt.Points);
 
@@ -43,9 +49,46 @@ namespace GK_Projekt2.Components
 
             gamma /= full;
 
-            double z = A.AfterP.Z * alpha + B.AfterP.Z * beta + C.AfterP.Z * gamma;
+            _alpha = alpha;
+            _beta = beta;
+            _gamma = gamma;
 
-            return z;
+        }
+
+        public Point<double> InterpolatePos()
+        {
+
+            Point<double> pos = new Point<double>();
+
+            pos.AddMultiplied(A.AfterP, _alpha);
+            pos.AddMultiplied(B.AfterP, _beta);
+            pos.AddMultiplied(C.AfterP, _gamma);
+
+            return pos;
+        }
+
+        public Point<double> InterpolateUV()
+        {
+            Point<double> uv = new Point<double>();
+
+            uv.AddMultiplied(A.UV, _alpha);
+            uv.AddMultiplied(B.UV, _beta);
+            uv.AddMultiplied(C.UV, _gamma);
+
+            return uv;
+        }
+
+        public Vector<double> InterpolateNormal()
+        {
+
+
+            Vector<double> normal = new Vector<double>();
+
+            normal.AddMultiplied(A.AfterNormal, _alpha);
+            normal.AddMultiplied(B.AfterNormal, _beta);
+            normal.AddMultiplied(C.AfterNormal, _gamma);
+
+            return normal;
         }
 
         public void RotateVertices(Matrix3<double> rot)
