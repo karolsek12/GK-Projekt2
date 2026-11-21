@@ -11,6 +11,14 @@ namespace GK_Projekt2.Components
         private List<Point<double>> _controlPoints;
 
 
+        public List<Point<double>> ControlPoints
+        {
+            get
+            {
+                return _controlPoints;
+            }
+        }
+
         public BezierSurface(List<Point<double>> points)
         {
             _controlPoints = points;

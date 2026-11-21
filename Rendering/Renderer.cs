@@ -50,7 +50,7 @@ namespace GK_Projekt2.Rendering
 
             _bezierSurface = new BezierSurface(Constants.TestControlPoints);
 
-            _mesh = new Mesh(_bezierSurface.GetTriangles(20),
+            _mesh = new Mesh(_bezierSurface.GetTriangles(20), _bezierSurface.ControlPoints,
                 new ColorInfo(0.5, 0.5, 1, new Point<double>(1.0, 1.0, 1.0))
                 );
             _tbh = new TurboBitmapHandler(_bitmap[0].Width, _bitmap[0].Height);
@@ -90,7 +90,7 @@ namespace GK_Projekt2.Rendering
             _t = (_t + dt) % Constants.CycleTime;
             _li.SetPos(_t / Constants.CycleTime);
 
-            _tbh.Render(GetUnusedBitmap(), _mesh, _li);
+            _tbh.Render(GetUnusedBitmap(), _mesh ,_li);
             Flip();
             _box.Image = GetCurrentBitmap();
             _box.Invalidate();

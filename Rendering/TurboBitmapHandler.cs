@@ -18,20 +18,23 @@ namespace GK_Projekt2.Rendering
         private Point<double>[] _colors;
         private double[] _zBuffer;
 
+        private bool _fillTriangles;
+        private bool _drawMesh;
+        private bool _drawPoly;
+
         public TurboBitmapHandler(int width, int height) {
         
             _width = width;
             _height = height;
             _colors = new Point<double>[width*height];
             _zBuffer = new double[width*height];
-            
+            _fillTriangles = true;
+            _drawMesh = true;
+            _drawPoly = true;
         }
 
-        public void Render(Bitmap bm,Mesh mesh,LightInfo li)
+        private void FillTriangles(Mesh mesh, LightInfo li)
         {
-            Array.Fill(_colors, new Point<double>(1.0, 1.0, 1.0));
-            Array.Fill(_zBuffer, double.MinValue);
-
             foreach (Triangle t in mesh.Triangles)
             {
                 DiscreteTriangle dt = new DiscreteTriangle(ToDiscrete(t.A), ToDiscrete(t.B), ToDiscrete(t.C));
@@ -50,7 +53,7 @@ namespace GK_Projekt2.Rendering
 
                         double z = t.InterpolateZ();
 
-                        if(z >= _zBuffer[id])
+                        if (z >= _zBuffer[id])
                         {
                             _zBuffer[id] = z;
 
@@ -62,11 +65,87 @@ namespace GK_Projekt2.Rendering
                                 mesh.CI, li);
                         }
 
-                        
+
                     }
                 }
             }
+        }
 
+        private void Drawline(Point<int> da, Point<int> db, Point<double> a, Point<double> b,Point<double> color)
+        {
+            List<Point<int>> pts = Bresenham.GetPoints(da, db);
+            double z;
+
+            for (int i = 0; i < pts.Count; i++)
+            {
+                z = Bresenham.InterpolateLineZ(pts[i].X, pts[i].Y, a, b, da, db);
+
+                int id = pts[i].Y * _width + pts[i].X;
+
+                if (z >= _zBuffer[id])
+                {
+                    _zBuffer[id] = z;
+
+                    _colors[id] = color;
+                }
+            }
+        }
+
+        private void DrawMesh(Mesh mesh)
+        {
+            Point<double> black = new Point<double>();
+            foreach (Triangle t in mesh.Triangles)
+            {
+                DiscreteTriangle dt = new DiscreteTriangle(ToDiscrete(t.A), ToDiscrete(t.B), ToDiscrete(t.C));
+                t.PreCalcFull(dt);
+
+                Drawline(dt.A, dt.B, t.A, t.B,black);
+                Drawline(dt.A, dt.C, t.A, t.C, black);
+                Drawline(dt.C, dt.B, t.C, t.B, black);
+            }
+        }
+
+        private void DrawPoly(Mesh mesh)
+        {
+            List<Point<double>> control = mesh.ControlPointsAfter;
+            int n = Constants.MaxControlDimension;
+            Point<double> white = new Point<double>(1.0,1.0,1.0);
+
+            for (int i = 0; i < n; i++)
+            {
+                for(int j = 1; j < n; j++)
+                {
+                    Point<double> cur = control[i*n+j];
+                    Point<double> prev = control[i * n + j-1];
+                    Drawline(ToDiscrete(cur), ToDiscrete(prev), cur, prev,white);
+                    cur = control[j* n + i];
+                    prev = control[(j-1) * n + i];
+                    Drawline(ToDiscrete(cur), ToDiscrete(prev), cur, prev,white);
+                }
+                
+            }
+
+        }
+
+        public void Render(Bitmap bm,Mesh mesh,LightInfo li)
+        {
+            Array.Fill(_colors, new Point<double>(0.7, 0.7, 0.7));
+            Array.Fill(_zBuffer, double.MinValue);
+
+            if (_fillTriangles)
+            {
+                FillTriangles(mesh,li);
+            }
+
+            if (_drawMesh)
+            {
+                DrawMesh(mesh);
+            }
+        
+            if(_drawPoly)
+            {
+                DrawPoly(mesh);
+            }
 
             WriteToBitmap(bm);
         }

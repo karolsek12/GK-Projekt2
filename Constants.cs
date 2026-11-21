@@ -11,27 +11,29 @@ namespace GK_Projekt2
     {
         public static List<Point<double>> TestControlPoints = [
             new Point<double>(-1,-1,0),
-            new Point<double>(-1,-1/3,0),
-            new Point<double>(-1,1/3,0),
+            new Point<double>(-1,-1.0/3,0),
+            new Point<double>(-1,1.0/3,0),
             new Point<double>(-1,1,0),
 
-            new Point<double>(-1/3,-1,0),
-            new Point<double>(-1/3,-1/3,0.5),
-            new Point<double>(-1/3,1/3,0.5),
-            new Point<double>(-1/3,1,0),
+            new Point<double>(-1.0/3,-1,0),
+            new Point<double>(-1.0/3,-1.0/3,0.5),
+            new Point<double>(-1.0/3,1.0/3,0.5),
+            new Point<double>(-1.0/3,1,0),
 
-            new Point<double>(1/3,-1,0),
-            new Point<double>(1/3,-1/3,0.5),
-            new Point<double>(1/3,1/3,0.5),
-            new Point<double>(1/3,1,0),
+            new Point<double>(1.0/3,-1,0),
+            new Point<double>(1.0/3,-1.0/3,0.5),
+            new Point<double>(1.0/3,1.0/3,0.5),
+            new Point<double>(1.0/3,1,0),
 
             new Point<double>(1,-1,0),
-            new Point<double>(1,-1/3,0),
-            new Point<double>(1,1/3,0),
+            new Point<double>(1,-1.0/3,0),
+            new Point<double>(1,1.0/3,0),
             new Point<double>(1,1,0)
 
 
             ];
+
+        public static int MaxControlDimension = 4;
 
         public static List<Point<double>> TestLightControlPoints = [
 
