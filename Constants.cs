@@ -50,10 +50,10 @@ namespace GK_Projekt2
 
         public static double MaxAngleChange = Math.PI / 1000;
 
-        public static int Cooldown = 10;
+        public static int Cooldown = 40;
 
-        public static double OneTick = Cooldown/100.0;
+        public static double CycleTime = 10.0;
 
-        public static double CycleTime = 5.0; 
+        public static double StretchRatio = 1.5;
     }
 }

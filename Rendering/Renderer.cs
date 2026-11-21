@@ -24,13 +24,18 @@ namespace GK_Projekt2.Rendering
         private Matrix3<double> _rotation;
         private LightInfo _li;
         private double _t;
+        private Stopwatch _lightWatch;
 
         public Renderer(PictureBox box)
         {
             _box = box;
             _bitmap = new Bitmap[2];
-            _bitmap[0] = new Bitmap((int)(box.Width/1.5), (int)(box.Height/1.5));
-            _bitmap[1] = new Bitmap((int)(box.Width / 1.5), (int)(box.Height / 1.5));
+            int w, h;
+            w = (int)(box.Width / Constants.StretchRatio);
+            h = (int)(box.Height / Constants.StretchRatio);
+
+            _bitmap[0] = new Bitmap(w, h);
+            _bitmap[1] = new Bitmap(w,h);
             _rotation = MatrixCreation.GetRot(0,0,0);
 
             using (Graphics g = Graphics.FromImage(_bitmap[0]))
@@ -52,7 +57,7 @@ namespace GK_Projekt2.Rendering
 
             _li = new LightInfo(new Point<double>(1.0, 1.0, 1.0), Constants.TestLightControlPoints.ToArray());
             _t = 0;
-
+            _lightWatch = Stopwatch.StartNew();
 
         }
 
@@ -77,25 +82,22 @@ namespace GK_Projekt2.Rendering
 
         public void Render()
         {
-            _t += Constants.OneTick;
+            double dt = _lightWatch.Elapsed.TotalSeconds;
+            _lightWatch.Restart();
 
-            while (_t >= Constants.CycleTime)
-            {
-                _t -= Constants.CycleTime;
-            }
+            if (dt > 0.1) dt = 0.1;
 
+            _t = (_t + dt) % Constants.CycleTime;
             _li.SetPos(_t / Constants.CycleTime);
 
-
-            _tbh.Render(GetUnusedBitmap(),_mesh,_li);
+            _tbh.Render(GetUnusedBitmap(), _mesh, _li);
             Flip();
             _box.Image = GetCurrentBitmap();
-            _box.Refresh();
+            _box.Invalidate();
         }
 
         public void SetRotation(double alpha,double beta, double gamma)
         {
-            Stopwatch s = new Stopwatch();
             Matrix3<double> change = MatrixCreation.GetRot(alpha, beta, gamma);
 
             _rotation = change*_rotation;

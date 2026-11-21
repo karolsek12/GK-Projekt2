@@ -68,11 +68,20 @@ namespace GK_Projekt2.Components
             }
         }
 
-        public Point<double> UV
+        public double U
         {
             get
             {
-                return new Point<double>(_u, _v, 0);
+                return _u;
+            }
+        }
+
+        public double V
+        {
+
+            get
+            {
+                return _v;
             }
         }
 
@@ -86,13 +95,18 @@ namespace GK_Projekt2.Components
 
             temp = new Vector<double>(_beforeTangentu);
 
+            temp = rot * temp;
+
             _afterTangentu = new Vector<double>(temp);
 
             temp = new Vector<double>(_beforeTangentv);
 
+            temp = rot * temp;
             _afterTangentv = new Vector<double>(temp);
 
             temp = new Vector<double>(_beforeNormal);
+
+            temp = rot * temp;
 
             _afterNormal = new Vector<double>(temp);
         }

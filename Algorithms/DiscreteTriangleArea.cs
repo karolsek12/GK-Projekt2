@@ -9,11 +9,11 @@ namespace GK_Projekt2.Algorithms
 {
     public static class DiscreteTriangleArea
     {
-        public static double GetArea(Point<int> a, Point<int> b, Point<int> c)
+        public static double GetArea(int ax, int ay, Point<int> b, Point<int> c)
         {
             double p = 0.0;
 
-            p = a.X*(b.Y-c.Y) + b.X*(c.Y-a.Y) + c.X*(a.Y-b.Y);
+            p = ax*(b.Y-c.Y) + b.X*(c.Y-ay) + c.X*(ay-b.Y);
             p = p / 2.0;
 
             if (p < 0)
@@ -22,14 +22,10 @@ namespace GK_Projekt2.Algorithms
             return p;
         }
 
-        public static double GetArea(Point<int>[] pts)
+        public static double GetArea(Point<int> a, Point<int> b, Point<int> c)
         {
-            return GetArea(pts[0], pts[1], pts[2]);
+            return GetArea(a.X, a.Y, b, c);
         }
 
-        public static double GetArea(Point<int> target, Point<int>[] pts)
-        {
-            return GetArea(target, pts[0], pts[1]);
-        }
     }
 }

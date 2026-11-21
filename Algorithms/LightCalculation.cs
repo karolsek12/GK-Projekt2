@@ -19,18 +19,24 @@ namespace GK_Projekt2.Algorithms
 
             Vector<double> V = new Vector<double>(0, 0, 1);
 
-            Vector<double> r = new Vector<double>(normal);
+            
+
+            if(normal * V < 0)
+            {
+                normal.Mult(-1.0); // druga strona
+            }
 
             normal.Normalise();
             l.Normalise();
 
+            Vector<double> r = new Vector<double>(normal);
             r.Mult(2.0*(normal * l));
             r.AddMultiplied(l, -1);
             r.Normalise();
             
-            double cos1 = Math.Cos(l * normal);
+            double cos1 = l * normal;
 
-            double cos2 = Math.Pow(Math.Cos(r*V), ci.M);
+            double cos2 = Math.Pow(r*V, ci.M);
 
             cos1 *= ci.Kd;
 
@@ -38,9 +44,9 @@ namespace GK_Projekt2.Algorithms
 
             Point<double> meshColor = ci.I0.GetColor(u, v);
 
-            color[0] = cos1 * li.Il[0] * meshColor[0] + cos2 * li.Il[0] * meshColor[0];
-            color[1] = cos1 * li.Il[1] * meshColor[1] + cos2 * li.Il[1] * meshColor[1];
-            color[2] = cos1 * li.Il[2] * meshColor[2] + cos2 * li.Il[2] * meshColor[2];
+            color.X = cos1 * li.Il.X * meshColor.X + cos2 * li.Il.X * meshColor.X;
+            color.Y = cos1 * li.Il.Y * meshColor.Y + cos2 * li.Il.Y * meshColor.Y;
+            color.Z = cos1 * li.Il.Z * meshColor.Z + cos2 * li.Il.Z * meshColor.Z;
 
             return color;
         }

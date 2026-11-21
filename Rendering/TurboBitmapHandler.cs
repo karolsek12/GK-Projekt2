@@ -15,62 +15,59 @@ namespace GK_Projekt2.Rendering
         private int _width;
         private int _height;
 
-        private Point<double>[,] _colors;
-        private double[,] _zBuffer;
+        private Point<double>[] _colors;
+        private double[] _zBuffer;
 
         public TurboBitmapHandler(int width, int height) {
         
             _width = width;
             _height = height;
-            _colors = new Point<double>[width,height];
-            _zBuffer = new double[width,height];
+            _colors = new Point<double>[width*height];
+            _zBuffer = new double[width*height];
             
         }
 
         public void Render(Bitmap bm,Mesh mesh,LightInfo li)
         {
+            Array.Fill(_colors, new Point<double>(1.0, 1.0, 1.0));
+            Array.Fill(_zBuffer, double.MinValue);
 
-            for (int x = 0; x < _width; x++)
+            foreach (Triangle t in mesh.Triangles)
             {
-                for(int y = 0; y < _height; y++)
+                DiscreteTriangle dt = new DiscreteTriangle(ToDiscrete(t.A), ToDiscrete(t.B), ToDiscrete(t.C));
+                t.PreCalcFull(dt);
+
+                foreach (FillTriangleVertexSort.ScanlineSpan span in
+                         FillTriangleVertexSort.GetSpans(dt, _width, _height))
                 {
-                    _colors[x, y] = new Point<double>(1.0,1.0,1.0);
-                    _zBuffer[x, y] = double.MinValue;
-                }
-            }
+                    int y = span.Y;
 
-            List<Triangle> triangles = mesh.Triangles;
-
-            DiscreteTriangle dt;
-            List<Point<int>> pts;
-            Vector<double> normal;
-            Point<double> pos;
-            Point<double> uv;
-          
-            foreach (Triangle t in triangles)
-            {
-                dt = new DiscreteTriangle(ToDiscrete(t.Points));
-
-                pts = FillTriangleVertexSort.FillTriangle(dt);
-
-                for(int i = 0; i < pts.Count; i++)
-                {
-                    t.Interpolate(pts[i], dt);
-
-                    pos = t.InterpolatePos();   
-
-                    if (pos.Z >= _zBuffer[pts[i].X, pts[i].Y])
+                    for (int x = span.X1; x <= span.X2; x++)
                     {
-                        _zBuffer[pts[i].X, pts[i].Y] = pos.Z;
-                        uv = t.InterpolateUV();
-                        normal = t.InterpolateNormal();
-                        _colors[pts[i].X, pts[i].Y] = Algorithms.LightCalculation.GetColor(pos, uv[0], uv[1], normal, mesh.CI, li);
+                        t.Interpolate(x, y, dt);
+
+                        int id = y * _width + x;
+
+                        double z = t.InterpolateZ();
+
+                        if(z >= _zBuffer[id])
+                        {
+                            _zBuffer[id] = z;
+
+                            _colors[id] = LightCalculation.GetColor(
+                                t.InterpolatePos(),
+                                t.InterpolateU(),
+                                t.InterpolateV(),
+                                t.InterpolateNormal(),
+                                mesh.CI, li);
+                        }
+
+                        
                     }
-                    
                 }
             }
-            
-           
+
+
             WriteToBitmap(bm);
         }
 
@@ -96,10 +93,9 @@ namespace GK_Projekt2.Rendering
                     {
                         id = x * bytesPerPixel;
 
-
-                        curline[id] = (byte)(_colors[x,y][0]*255);
-                        curline[id + 1] = (byte)(_colors[x, y][1] * 255);
-                        curline[id + 2] = (byte)(_colors[x, y][2] * 255);
+                        curline[id] = (byte)Math.Clamp((_colors[x+ y*_width][0]*255),0,255);
+                        curline[id + 1] = (byte)Math.Clamp((_colors[x + y * _width][1] * 255), 0, 255);
+                        curline[id + 2] = (byte)Math.Clamp((_colors[x + y * _width][2] * 255), 0, 255);
                     }
                     curline += stride;
                 }
@@ -108,17 +104,15 @@ namespace GK_Projekt2.Rendering
             
         }
 
-        public Point<int>[] ToDiscrete(Point<double>[] real)
+        public Point<int>ToDiscrete(Point<double> real)
         {
-            Point<int>[] discrete = new Point<int>[3];
+            Point<int> discrete = new Point<int>();
 
 
-            for(int i = 0; i < 3; i++)
-            {
-                int x = (int)(_width * 0.5 * (1.0 + real[i].X / Constants.MaxDistance));
-                int y = (int)(_height * 0.5 * (1.0 + real[i].Y / Constants.MaxDistance));
-                discrete[i] = new Point<int>(x, y, 0);
-            }
+
+                int x = (int)(_width * 0.5 * (1.0 + real.X / Constants.MaxDistance));
+                int y = (int)(_height * 0.5 * (1.0 + real.Y / Constants.MaxDistance));
+                discrete = new Point<int>(x, y, 0);
 
 
             return discrete;

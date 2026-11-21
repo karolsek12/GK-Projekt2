@@ -123,7 +123,7 @@ namespace GK_Projekt2.Components
 
         public static T operator*(Vector<T> v1, Vector<T> v2)
         {
-            return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
         }
 
 

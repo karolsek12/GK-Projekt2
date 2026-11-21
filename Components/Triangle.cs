@@ -9,45 +9,70 @@ namespace GK_Projekt2.Components
 {
     public class Triangle
     {
-        private Vertex A;
-        private Vertex B;
-        private Vertex C;
+        private Vertex _A;
+        private Vertex _B;
+        private Vertex _C;
 
         private double _alpha;
         private double _beta;
         private double _gamma;
+        private double _coeff;
 
         public Triangle(Vertex a, Vertex b, Vertex c)
         {
-            A = a;
-            B = b;
-            C = c;
+            _A = a;
+            _B = b;
+            _C = c;
         }
 
         public Point<double>[] Points
         {
             get
             {
-                return [A.AfterP, B.AfterP, C.AfterP];
+                return [_A.AfterP, _B.AfterP, _C.AfterP];
             }
         }
 
-
-
-        public void Interpolate(Point<int> target, DiscreteTriangle dt)
+        public Point<double> A
         {
-            double full = DiscreteTriangleArea.GetArea(dt.Points);
+            get
+            {
+                return _A.AfterP;
+            }
+        }
 
-            double alpha = DiscreteTriangleArea.GetArea(target, dt.Points[1..3]);
-            alpha /= full;
+        public Point<double> B
+        {
+            get
+            {
+                return _B.AfterP;
+            }
+        }
 
-            double beta = DiscreteTriangleArea.GetArea(target, dt.Points[0], dt.Points[2]);
+        public Point<double> C
+        {
+            get
+            {
+                return _C.AfterP;
+            }
+        }
 
-            beta /= full;
+        public void PreCalcFull(DiscreteTriangle dt)
+        {
+            _coeff = 1.0/DiscreteTriangleArea.GetArea(dt.A,dt.B,dt.C);
+        }
 
-            double gamma = DiscreteTriangleArea.GetArea(target, dt.Points[0..2]);
+        public void Interpolate(int x, int y, DiscreteTriangle dt)
+        {
 
-            gamma /= full;
+            double alpha = DiscreteTriangleArea.GetArea(x,y, dt.B,dt.C);
+            alpha *= _coeff;
+
+            double beta = DiscreteTriangleArea.GetArea(x,y, dt.A, dt.C);
+
+            beta *= _coeff;
+
+            double gamma = 1.0 - alpha - beta;
 
             _alpha = alpha;
             _beta = beta;
@@ -55,27 +80,35 @@ namespace GK_Projekt2.Components
 
         }
 
+        public double InterpolateZ()
+        {
+            return _A.AfterP.Z * _alpha + _B.AfterP.Z * _beta + _C.AfterP.Z * _gamma;
+        }
+
         public Point<double> InterpolatePos()
         {
 
             Point<double> pos = new Point<double>();
 
-            pos.AddMultiplied(A.AfterP, _alpha);
-            pos.AddMultiplied(B.AfterP, _beta);
-            pos.AddMultiplied(C.AfterP, _gamma);
+            pos.AddMultiplied(_A.AfterP, _alpha);
+            pos.AddMultiplied(_B.AfterP, _beta);
+            pos.AddMultiplied(_C.AfterP, _gamma);
 
             return pos;
         }
 
-        public Point<double> InterpolateUV()
+        public double InterpolateU()
         {
-            Point<double> uv = new Point<double>();
+            double u = _A.U*_alpha + _B.U*_beta + _C.U*_gamma;
 
-            uv.AddMultiplied(A.UV, _alpha);
-            uv.AddMultiplied(B.UV, _beta);
-            uv.AddMultiplied(C.UV, _gamma);
+            return u;
+        }
 
-            return uv;
+        public double InterpolateV()
+        {
+            double v = _A.V * _alpha + _B.V * _beta + _C.V * _gamma;
+
+            return v;
         }
 
         public Vector<double> InterpolateNormal()
@@ -84,43 +117,74 @@ namespace GK_Projekt2.Components
 
             Vector<double> normal = new Vector<double>();
 
-            normal.AddMultiplied(A.AfterNormal, _alpha);
-            normal.AddMultiplied(B.AfterNormal, _beta);
-            normal.AddMultiplied(C.AfterNormal, _gamma);
+            normal.AddMultiplied(_A.AfterNormal, _alpha);
+            normal.AddMultiplied(_B.AfterNormal, _beta);
+            normal.AddMultiplied(_C.AfterNormal, _gamma);
 
             return normal;
         }
 
         public void RotateVertices(Matrix3<double> rot)
         {
-            A.Rotate(rot);
-            B.Rotate(rot);
-            C.Rotate(rot);
+            _A.Rotate(rot);
+            _B.Rotate(rot);
+            _C.Rotate(rot);
         }
     }
 
     public struct DiscreteTriangle
     {
-        private Point<int> A;
-        private Point<int> B;
-        private Point<int> C;
+        private Point<int> _A;
+        private Point<int> _B;
+        private Point<int> _C;
 
         public DiscreteTriangle(Point<int>[] points)
         {
             if (points.Length != 3)
                 throw new Exception("something horrible happened!!!");
 
-            A = points[0];
-            B = points[1];
-            C = points[2];
+            _A = points[0];
+            _B = points[1];
+            _C = points[2];
 
+        }
+
+        public DiscreteTriangle(Point<int> A, Point<int> B, Point<int> C)
+        {
+            _A = A;
+            _B = B;
+            _C = C;
         }
 
         public Point<int>[] Points
         {
             get
             {
-                return [A, B, C];
+                return [_A, _B, _C];
+            }
+        }
+
+        public Point<int> A
+        {
+            get
+            {
+                return _A;
+            }
+        }
+
+        public Point<int> B
+        {
+            get
+            {
+                return _B;
+            }
+        }
+
+        public Point<int> C
+        {
+            get
+            {
+                return _C;
             }
         }
 
