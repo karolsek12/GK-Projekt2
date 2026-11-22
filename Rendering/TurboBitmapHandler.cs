@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace GK_Projekt2.Rendering
         private bool _fillTriangles;
         private bool _drawMesh;
         private bool _drawPoly;
+        private bool _drawBezier;
 
         public TurboBitmapHandler(int width, int height) {
         
@@ -31,6 +33,28 @@ namespace GK_Projekt2.Rendering
             _fillTriangles = true;
             _drawMesh = true;
             _drawPoly = true;
+            _drawBezier = true;
+        }
+
+
+        public void SetTriangles(bool set)
+        {
+            _fillTriangles = set;
+        }
+
+        public void SetMesh(bool set)
+        {
+            _drawMesh = set;
+        }
+
+        public void SetPoly(bool set)
+        {
+            _drawPoly = set;
+        }
+
+        public void SetBezier(bool set)
+        {
+            _drawBezier = set;
         }
 
         private void FillTriangles(Mesh mesh, LightInfo li)
@@ -53,15 +77,27 @@ namespace GK_Projekt2.Rendering
 
                         double z = t.InterpolateZ();
 
+                        double u = t.InterpolateU();
+                        double v = t.InterpolateV();
+                        Vector<double> normal = t.InterpolateNormal();
+
+                        if(mesh.NormalInfo!= null)
+                        {
+                            Vector<double> tu = t.InterpolateTangentu();
+                            Vector<double> tv = t.InterpolateTangentv();
+
+                            normal = mesh.NormalInfo.GetNormal(u, v, tu, tv, normal);
+                        }
+
                         if (z >= _zBuffer[id])
                         {
                             _zBuffer[id] = z;
 
                             _colors[id] = LightCalculation.GetColor(
                                 t.InterpolatePos(),
-                                t.InterpolateU(),
-                                t.InterpolateV(),
-                                t.InterpolateNormal(),
+                                u,
+                                v,
+                                normal,
                                 mesh.CI, li);
                         }
 
@@ -127,24 +163,84 @@ namespace GK_Projekt2.Rendering
 
         }
 
-        public void Render(Bitmap bm,Mesh mesh,LightInfo li)
+        private void DrawBezier(LightInfo li)
         {
-            Array.Fill(_colors, new Point<double>(0.7, 0.7, 0.7));
-            Array.Fill(_zBuffer, double.MinValue);
+            List<Point<double>> points = BezierCalculation.GetPoints(li.ControlPoints);
 
+            for(int i = 1; i < points.Count; i++)
+            {
+                Drawline(ToDiscrete(points[i]), ToDiscrete(points[i - 1]), points[i], points[i - 1], new Point<double>(0.0, 0.0, 0.0));
+            }
+
+            Point<int> pos = ToDiscrete(li.Pos);
+            List<Point<int>> star = new List<Point<int>>();
+
+            star.Add(pos);
+
+            if(pos.X -1 >= 0)
+            {
+                star.Add(new Point<int>(pos.X - 1, pos.Y,0));
+            }
+            if(pos.Y -1 >= 0)
+            {
+                star.Add(new Point<int>(pos.X, pos.Y-1, 0));
+            }
+            if (pos.X + 1 < _width)
+            {
+                star.Add(new Point<int>(pos.X + 1, pos.Y, 0));
+            }
+            if (pos.Y +1  < 0)
+            {
+                star.Add(new Point<int>(pos.X, pos.Y + 1, 0));
+            }
+            double z = li.Pos.Z;
+            for (int i = 0; i < star.Count; i++)
+            {
+                
+                int id = star[i].Y * _width + star[i].X;
+
+                if (z >= _zBuffer[id])
+                {
+                    _zBuffer[id] = z;
+
+                    _colors[id] = new Point<double>(1.0,0,0);
+                }
+            }
+
+        }
+
+        private void Render(Mesh mesh, LightInfo li)
+        {
             if (_fillTriangles)
             {
-                FillTriangles(mesh,li);
+                FillTriangles(mesh, li);
             }
 
             if (_drawMesh)
             {
                 DrawMesh(mesh);
             }
-        
-            if(_drawPoly)
+
+            if (_drawPoly)
             {
                 DrawPoly(mesh);
+            }
+
+            if (_drawBezier)
+            {
+                DrawBezier(li);
+            }
+        }
+
+        public void Render(Bitmap bm,List<Mesh> meshes,LightInfo li)
+        {
+            Array.Fill(_colors, new Point<double>(0.7, 0.7, 0.7));
+            Array.Fill(_zBuffer, double.MinValue);
+
+            foreach (Mesh m in meshes)
+            {
+                Render(m, li);
+
             }
 
             WriteToBitmap(bm);
@@ -172,9 +268,11 @@ namespace GK_Projekt2.Rendering
                     {
                         id = x * bytesPerPixel;
 
-                        curline[id] = (byte)Math.Clamp((_colors[x+ y*_width][0]*255),0,255);
+                        curline[id] = (byte)Math.Clamp((_colors[x + y * _width][2] * 255), 0, 255);
                         curline[id + 1] = (byte)Math.Clamp((_colors[x + y * _width][1] * 255), 0, 255);
-                        curline[id + 2] = (byte)Math.Clamp((_colors[x + y * _width][2] * 255), 0, 255);
+                        curline[id + 2] = (byte)Math.Clamp((_colors[x+ y*_width][0]*255),0,255);
+                        
+                        
                     }
                     curline += stride;
                 }

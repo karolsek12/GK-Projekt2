@@ -35,6 +35,7 @@ namespace GK_Projekt2.Components
     public class ImageColor : IObjectColor, IDisposable
     {
         private Bitmap _image;
+        private Color[,] _map;
         private int _width;
         private int _height;
 
@@ -43,6 +44,9 @@ namespace GK_Projekt2.Components
             _image = image;
             _width = image.Width;
             _height = image.Height;
+            _map = new Color[_width, _height];
+
+            ReadImage();
         }
 
         public void Dispose()
@@ -50,14 +54,27 @@ namespace GK_Projekt2.Components
             _image.Dispose();
         }
 
+        public void ReadImage()
+        {
+            for(int x= 0; x < _width; x++)
+            {
+                for (int y = 0; y < _height; y++)
+                {
+                    _map[x,y] = _image.GetPixel(x, y); ;
+                }
+            }
+        }
+
         public Point<double> GetColor(double u, double v)
         {
-            int x = (int)(u * _width);
-            int y = (int)(v * _height);
+            int x = Math.Clamp((int)(u * _width),0,_width-1);
+            int y = Math.Clamp((int)(v * _height),0,_height-1);
 
-            Color c = _image.GetPixel(x, y);
+            Color c = _map[x, y];
 
-            return new Point<double>(c.R / 255.0, c.G / 255.0, c.B / 255.0);
+            return new Point<double>(Math.Clamp(c.R / 255.0,0.0,1.0),
+                Math.Clamp(c.G / 255.0,0.0,1.0),
+                Math.Clamp(c.B / 255.0,0.0,1.0));
         }
 
     }

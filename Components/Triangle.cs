@@ -124,6 +124,27 @@ namespace GK_Projekt2.Components
             return normal;
         }
 
+        public Vector<double> InterpolateTangentu()
+        {
+            Vector<double> tangent = new Vector<double>();
+
+            tangent.AddMultiplied(_A.AfterTangentu, _alpha);
+            tangent.AddMultiplied(_B.AfterTangentu, _beta);
+            tangent.AddMultiplied(_C.AfterTangentu, _gamma);
+
+            return tangent;
+        }
+
+        public Vector<double> InterpolateTangentv()
+        {
+            Vector<double> tangent = new Vector<double>();
+
+            tangent.AddMultiplied(_A.AfterTangetnv, _alpha);
+            tangent.AddMultiplied(_B.AfterTangetnv, _beta);
+            tangent.AddMultiplied(_C.AfterTangetnv, _gamma);
+
+            return tangent;
+        }
         public void RotateVertices(Matrix3<double> rot)
         {
             _A.Rotate(rot);

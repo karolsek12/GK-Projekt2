@@ -12,6 +12,7 @@ namespace GK_Projekt2.Components
         private ColorInfo _ci;
         private List<Point<double>> _controlPoints;
         private List<Point<double>> _controlPointsAfter;
+        private NormalInfo? _normalInfo;
 
         public Mesh(List<Triangle> triangles, List<Point<double>> controlPoints, ColorInfo ci)
         {
@@ -19,6 +20,7 @@ namespace GK_Projekt2.Components
             _ci = ci;
             _controlPoints = controlPoints;
             _controlPointsAfter = new List<Point<double>>(controlPoints);
+            _normalInfo = null;
         }
 
         public List<Triangle> Triangles
@@ -26,6 +28,10 @@ namespace GK_Projekt2.Components
             get
             {
                 return _triangles;
+            }
+            set
+            {
+                _triangles = value;
             }
         }
 
@@ -54,6 +60,34 @@ namespace GK_Projekt2.Components
         public ColorInfo CI
         {
             get { return _ci; }
+        }
+
+        public NormalInfo? NormalInfo
+        {
+            get
+            {
+                return _normalInfo;
+            }
+        }
+
+        public void RemoveNormal()
+        {
+            if(_normalInfo != null)
+            {
+                _normalInfo.Dispose();
+                _normalInfo = null;
+            }
+            
+        }
+
+        public void SetNormal(Bitmap bitmap)
+        {
+            if(_normalInfo != null)
+            {
+                RemoveNormal();
+            }
+
+            _normalInfo = new NormalInfo(bitmap);
         }
     }
 }

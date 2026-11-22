@@ -41,9 +41,9 @@ namespace GK_Projekt2.Components
             _z = p.Z;
         }
 
-        public T X { get { return _x; } }
-        public T Y { get { return _y; } }
-        public T Z { get { return _z; } }
+        public T X { get { return _x; } set { _x = value; } }
+        public T Y { get { return _y; } set { _y = value; } }
+        public T Z { get { return _z; } set { _z = value; } }
 
 
         public void Add(Vector<T> p)

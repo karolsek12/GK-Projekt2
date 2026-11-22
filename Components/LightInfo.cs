@@ -36,6 +36,14 @@ namespace GK_Projekt2.Components
             }
         }
 
+        public Point<double>[] ControlPoints
+        {
+            get
+            {
+                return _controlPoints;
+            }
+        }
+
         public void SetPos(double t)
         {
             _pos = Algorithms.BezierCalculation.GetPos(_controlPoints, t);

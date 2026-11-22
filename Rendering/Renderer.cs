@@ -18,15 +18,16 @@ namespace GK_Projekt2.Rendering
         private Bitmap[] _bitmap;
         private int _flip = 0;
 
-        private BezierSurface _bezierSurface;
-        private Mesh _mesh;
+        private List<BezierSurface> _bezierSurfaces;
+        private List<Mesh> _meshes;
         private TurboBitmapHandler _tbh;
         private Matrix3<double> _rotation;
         private LightInfo _li;
         private double _t;
         private Stopwatch _lightWatch;
+        private bool _moveLight;
 
-        public Renderer(PictureBox box)
+        public Renderer(PictureBox box,List<BezierSurface> surfaces)
         {
             _box = box;
             _bitmap = new Bitmap[2];
@@ -48,17 +49,24 @@ namespace GK_Projekt2.Rendering
                 g.Clear(Color.White);
             }
 
-            _bezierSurface = new BezierSurface(Constants.TestControlPoints);
+            _bezierSurfaces = surfaces;
+            _meshes = new List<Mesh>();
 
-            _mesh = new Mesh(_bezierSurface.GetTriangles(20), _bezierSurface.ControlPoints,
-                new ColorInfo(0.5, 0.5, 1, new Point<double>(1.0, 1.0, 1.0))
+            foreach(BezierSurface bs in _bezierSurfaces)
+            {
+                Mesh mesh = new Mesh(bs.GetTriangles(Constants.InitTriangles), bs.ControlPoints,
+                new ColorInfo(0.5, 0.5, 1, Constants.InitMesh)
                 );
+
+                _meshes.Add(mesh);
+            }
+
             _tbh = new TurboBitmapHandler(_bitmap[0].Width, _bitmap[0].Height);
 
-            _li = new LightInfo(new Point<double>(1.0, 1.0, 1.0), Constants.TestLightControlPoints.ToArray());
+            _li = new LightInfo(Constants.InitLightColor, Constants.TestLightControlPoints.ToArray());
             _t = 0;
             _lightWatch = Stopwatch.StartNew();
-
+            _moveLight = true;
         }
 
         private Bitmap GetUnusedBitmap()
@@ -82,15 +90,19 @@ namespace GK_Projekt2.Rendering
 
         public void Render()
         {
-            double dt = _lightWatch.Elapsed.TotalSeconds;
-            _lightWatch.Restart();
+            if (_moveLight)
+            {
+                double dt = _lightWatch.Elapsed.TotalSeconds;
+                _lightWatch.Restart();
 
-            if (dt > 0.1) dt = 0.1;
+                if (dt > 0.1) dt = 0.1;
 
-            _t = (_t + dt) % Constants.CycleTime;
-            _li.SetPos(_t / Constants.CycleTime);
+                _t = (_t + dt) % Constants.CycleTime;
+                _li.SetPos(_t / Constants.CycleTime);
+            }
+            
 
-            _tbh.Render(GetUnusedBitmap(), _mesh ,_li);
+            _tbh.Render(GetUnusedBitmap(), _meshes ,_li);
             Flip();
             _box.Image = GetCurrentBitmap();
             _box.Invalidate();
@@ -101,9 +113,106 @@ namespace GK_Projekt2.Rendering
             Matrix3<double> change = MatrixCreation.GetRot(alpha, beta, gamma);
 
             _rotation = change*_rotation;
-            _mesh.RotateVertices(_rotation);
+
+            foreach(Mesh mesh in _meshes)
+            {
+                mesh.RotateVertices(_rotation);
+            }
+
         }
 
+        public void SetTriangles(bool set)
+        {
+            _tbh.SetTriangles(set);
+        }
+
+        public void SetMesh(bool set)
+        {
+            _tbh.SetMesh(set);
+        }
+
+        public void SetPoly(bool set)
+        {
+            _tbh.SetPoly(set);
+        }
+
+        public void SetBezier(bool set)
+        {
+            _tbh.SetBezier(set);
+        }
+
+        public void Setkd(double set)
+        {
+            foreach(Mesh mesh in _meshes)
+            {
+                mesh.CI.Kd = set;
+            }
+
+        }
+
+        public void Setks(double set)
+        {
+            foreach(Mesh mesh in _meshes)
+            {
+                mesh.CI.Ks = set;
+            }
+        }
+
+        public void Setm(int set)
+        {
+            foreach(Mesh mesh in _meshes)
+            {
+                mesh.CI.M = set;
+            }
+        }
+
+        public void SetTriangles(int set)
+        {
+            for (int i = 0; i < _meshes.Count; i++) {
+
+                _meshes[i].Triangles = _bezierSurfaces[i].GetTriangles(set);
+                _meshes[i].RotateVertices(_rotation);
+            }
+        }
+
+        public void SetLight(bool set)
+        {
+            if (set)
+            {
+                _lightWatch.Restart();
+                _moveLight = true;
+            }
+            else
+            {
+                _lightWatch.Stop();
+                _moveLight = false;
+            }
+        }
+
+        public void SetMeshColor(Point<double> color,int id)
+        {
+            _meshes[id].CI.SetPlainColor(color); 
+        }
+
+        public void SetMeshImage(Bitmap bm,int id)
+        {
+            _meshes[id].CI.SetImageColor(bm);
+        }
+
+        public void RemoveNormal(int id)
+        {
+            _meshes[id].RemoveNormal();
+        }
+
+        public bool CheckHasNormal(int id)
+        {
+            return _meshes[id].NormalInfo != null;
+        }
+        
+        public void SetNormal(Bitmap bm,int id)
+        {
+            _meshes[id].SetNormal(bm);
+        }
     }
 
 

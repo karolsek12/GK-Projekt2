@@ -34,5 +34,28 @@ namespace GK_Projekt2.Algorithms
             return first;
 
         }
+
+        public static List<Point<double>> GetPoints(Point<double>[] control)
+        {
+            List<Point<double>> points = new List<Point<double>>();
+
+            double step = Constants.BezierStep;
+
+            int steps = (int)Math.Ceiling(1.0 / step);
+
+            for (int i = 0; i <= steps; i++)
+            {
+                double t = i * step;
+                if (t > 1.0)
+                    t = 1.0;
+
+                points.Add(GetPos(control, t));
+
+                if (t >= 1.0)
+                    break;
+            }
+
+            return points;
+        }
     }
 }
