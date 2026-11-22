@@ -29,11 +29,22 @@
         private void InitializeComponent()
         {
             sidePanel = new Panel();
+            label9 = new Label();
+            Y_Slider = new TrackBar();
+            label8 = new Label();
+            X_Slider = new TrackBar();
+            label7 = new Label();
+            ControlID = new ComboBox();
+            label6 = new Label();
+            label4 = new Label();
+            Bezier_z = new TrackBar();
+            Bezier_Curve = new Label();
+            Del_Normal = new Button();
+            Set_Normal = new Button();
             Image_Button = new Button();
             Color_Button = new Button();
             label5 = new Label();
             CurveID = new ComboBox();
-            label4 = new Label();
             n_slider = new TrackBar();
             Move_Light = new CheckBox();
             m_slider = new TrackBar();
@@ -50,9 +61,12 @@
             mainLayout = new TableLayoutPanel();
             Color_Dialog = new ColorDialog();
             Open_Image = new OpenFileDialog();
-            Set_Normal = new Button();
-            Del_Normal = new Button();
+            colorDialog1 = new ColorDialog();
+            Light_Color = new Button();
             sidePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)Y_Slider).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)X_Slider).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)Bezier_z).BeginInit();
             ((System.ComponentModel.ISupportInitialize)n_slider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)m_slider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)kd_slider).BeginInit();
@@ -63,13 +77,23 @@
             // 
             // sidePanel
             // 
+            sidePanel.Controls.Add(Light_Color);
+            sidePanel.Controls.Add(label9);
+            sidePanel.Controls.Add(Y_Slider);
+            sidePanel.Controls.Add(label8);
+            sidePanel.Controls.Add(X_Slider);
+            sidePanel.Controls.Add(label7);
+            sidePanel.Controls.Add(ControlID);
+            sidePanel.Controls.Add(label6);
+            sidePanel.Controls.Add(label4);
+            sidePanel.Controls.Add(Bezier_z);
+            sidePanel.Controls.Add(Bezier_Curve);
             sidePanel.Controls.Add(Del_Normal);
             sidePanel.Controls.Add(Set_Normal);
             sidePanel.Controls.Add(Image_Button);
             sidePanel.Controls.Add(Color_Button);
             sidePanel.Controls.Add(label5);
             sidePanel.Controls.Add(CurveID);
-            sidePanel.Controls.Add(label4);
             sidePanel.Controls.Add(n_slider);
             sidePanel.Controls.Add(Move_Light);
             sidePanel.Controls.Add(m_slider);
@@ -88,6 +112,123 @@
             sidePanel.Name = "sidePanel";
             sidePanel.Size = new Size(176, 700);
             sidePanel.TabIndex = 2;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(103, 546);
+            label9.Name = "label9";
+            label9.Size = new Size(44, 15);
+            label9.TabIndex = 29;
+            label9.Text = "y (-1:1)";
+            // 
+            // Y_Slider
+            // 
+            Y_Slider.Location = new Point(5, 546);
+            Y_Slider.Maximum = 100;
+            Y_Slider.Name = "Y_Slider";
+            Y_Slider.Size = new Size(104, 45);
+            Y_Slider.TabIndex = 28;
+            Y_Slider.TabStop = false;
+            Y_Slider.Value = 100;
+            Y_Slider.Scroll += Y_Slider_Scroll;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(103, 504);
+            label8.Name = "label8";
+            label8.Size = new Size(44, 15);
+            label8.TabIndex = 27;
+            label8.Text = "x (-1:1)";
+            // 
+            // X_Slider
+            // 
+            X_Slider.Location = new Point(5, 504);
+            X_Slider.Maximum = 100;
+            X_Slider.Name = "X_Slider";
+            X_Slider.Size = new Size(104, 45);
+            X_Slider.TabIndex = 26;
+            X_Slider.TabStop = false;
+            X_Slider.Value = 100;
+            X_Slider.Scroll += X_Slider_Scroll;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(57, 469);
+            label7.Name = "label7";
+            label7.Size = new Size(92, 15);
+            label7.TabIndex = 25;
+            label7.Text = "Control Point ID";
+            // 
+            // ControlID
+            // 
+            ControlID.FormattingEnabled = true;
+            ControlID.Location = new Point(5, 466);
+            ControlID.Name = "ControlID";
+            ControlID.Size = new Size(39, 23);
+            ControlID.TabIndex = 24;
+            ControlID.SelectedIndexChanged += ControlID_SelectedIndexChanged;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(103, 415);
+            label6.Name = "label6";
+            label6.Size = new Size(43, 15);
+            label6.TabIndex = 23;
+            label6.Text = "z (-1:1)";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(103, 212);
+            label4.Name = "label4";
+            label4.Size = new Size(48, 15);
+            label4.TabIndex = 22;
+            label4.Text = "n (1-20)";
+            // 
+            // Bezier_z
+            // 
+            Bezier_z.Location = new Point(5, 415);
+            Bezier_z.Maximum = 100;
+            Bezier_z.Name = "Bezier_z";
+            Bezier_z.Size = new Size(104, 45);
+            Bezier_z.TabIndex = 20;
+            Bezier_z.TabStop = false;
+            Bezier_z.Value = 100;
+            Bezier_z.Scroll += Bezier_z_Scroll;
+            // 
+            // Bezier_Curve
+            // 
+            Bezier_Curve.AutoSize = true;
+            Bezier_Curve.Location = new Point(3, 387);
+            Bezier_Curve.Name = "Bezier_Curve";
+            Bezier_Curve.Size = new Size(105, 15);
+            Bezier_Curve.TabIndex = 19;
+            Bezier_Curve.Text = "Light Bezier Curve:";
+            // 
+            // Del_Normal
+            // 
+            Del_Normal.Enabled = false;
+            Del_Normal.Location = new Point(89, 346);
+            Del_Normal.Name = "Del_Normal";
+            Del_Normal.Size = new Size(75, 23);
+            Del_Normal.TabIndex = 18;
+            Del_Normal.Text = "Del Normal";
+            Del_Normal.UseVisualStyleBackColor = true;
+            Del_Normal.Click += Del_Normal_Click;
+            // 
+            // Set_Normal
+            // 
+            Set_Normal.Location = new Point(3, 346);
+            Set_Normal.Name = "Set_Normal";
+            Set_Normal.Size = new Size(75, 23);
+            Set_Normal.TabIndex = 17;
+            Set_Normal.Text = "Set Normal";
+            Set_Normal.UseVisualStyleBackColor = true;
+            Set_Normal.Click += Set_Normal_Click;
             // 
             // Image_Button
             // 
@@ -126,15 +267,6 @@
             CurveID.Size = new Size(39, 23);
             CurveID.TabIndex = 13;
             CurveID.SelectedIndexChanged += CurveID_SelectedIndexChanged;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(103, 212);
-            label4.Name = "label4";
-            label4.Size = new Size(48, 15);
-            label4.TabIndex = 12;
-            label4.Text = "n (1-20)";
             // 
             // n_slider
             // 
@@ -307,26 +439,15 @@
             // 
             Open_Image.FileName = "Opened_Image";
             // 
-            // Set_Normal
+            // Light_Color
             // 
-            Set_Normal.Location = new Point(3, 346);
-            Set_Normal.Name = "Set_Normal";
-            Set_Normal.Size = new Size(75, 23);
-            Set_Normal.TabIndex = 17;
-            Set_Normal.Text = "Set Normal";
-            Set_Normal.UseVisualStyleBackColor = true;
-            Set_Normal.Click += Set_Normal_Click;
-            // 
-            // Del_Normal
-            // 
-            Del_Normal.Enabled = false;
-            Del_Normal.Location = new Point(89, 346);
-            Del_Normal.Name = "Del_Normal";
-            Del_Normal.Size = new Size(75, 23);
-            Del_Normal.TabIndex = 18;
-            Del_Normal.Text = "Del Normal";
-            Del_Normal.UseVisualStyleBackColor = true;
-            Del_Normal.Click += Del_Normal_Click;
+            Light_Color.Location = new Point(3, 583);
+            Light_Color.Name = "Light_Color";
+            Light_Color.Size = new Size(75, 23);
+            Light_Color.TabIndex = 30;
+            Light_Color.Text = "Light Color";
+            Light_Color.UseVisualStyleBackColor = true;
+            Light_Color.Click += Light_Color_Click;
             // 
             // Form1
             // 
@@ -340,6 +461,9 @@
             Text = "Form1";
             sidePanel.ResumeLayout(false);
             sidePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)Y_Slider).EndInit();
+            ((System.ComponentModel.ISupportInitialize)X_Slider).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Bezier_z).EndInit();
             ((System.ComponentModel.ISupportInitialize)n_slider).EndInit();
             ((System.ComponentModel.ISupportInitialize)m_slider).EndInit();
             ((System.ComponentModel.ISupportInitialize)kd_slider).EndInit();
@@ -352,7 +476,6 @@
         #endregion
 
         private Panel sidePanel;
-        private Label label4;
         private TrackBar n_slider;
         private CheckBox Move_Light;
         private TrackBar m_slider;
@@ -375,5 +498,17 @@
         private OpenFileDialog Open_Image;
         private Button Del_Normal;
         private Button Set_Normal;
+        private ColorDialog colorDialog1;
+        private TrackBar Bezier_z;
+        private Label Bezier_Curve;
+        private Label label4;
+        private Label label6;
+        private Label label9;
+        private TrackBar Y_Slider;
+        private Label label8;
+        private TrackBar X_Slider;
+        private Label label7;
+        private ComboBox ControlID;
+        private Button Light_Color;
     }
 }

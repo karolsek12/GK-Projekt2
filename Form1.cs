@@ -45,6 +45,22 @@ namespace GK_Projekt2
             }
 
             CurveID.SelectedIndex = 0;
+
+            for (int i = 0; i < Constants.ControlPointsCount; i++)
+            {
+                ControlID.Items.Add($"{i}");
+            }
+
+            ControlID.SelectedIndex = 0;
+
+            double x = _renderer.GetControlX(0);
+            double y = _renderer.GetControlY(0);
+
+            int xval = (int)((x + 1) * 50.0);
+            int yval = (int)((y + 1) * 50.0);
+
+            X_Slider.Value = xval;
+            Y_Slider.Value = yval;
         }
 
         private Color PointToColor(Point<double> c)
@@ -133,8 +149,8 @@ namespace GK_Projekt2
         {
             double val = (ks_slider.Value / 100.0);
 
-            if (val > 100.0)
-                val = 100.0;
+            if (val > 1.0)
+                val = 1.0;
 
             _renderer.Setks(val);
         }
@@ -143,8 +159,8 @@ namespace GK_Projekt2
         {
             double val = (kd_slider.Value / 100.0);
 
-            if (val > 100.0)
-                val = 100.0;
+            if (val > 1.0)
+                val = 1.0;
 
             _renderer.Setkd(val);
         }
@@ -232,6 +248,77 @@ namespace GK_Projekt2
             _renderer.RemoveNormal(id);
 
             Del_Normal.Enabled = false;
+        }
+
+        private void Bezier_z_Scroll(object sender, EventArgs e)
+        {
+            double val = (Bezier_z.Value / 100.0);
+
+            val = -1.0 + 2 * val;
+
+            if (val > 1.0)
+                val = 1.0;
+            else if (val < -1.0)
+                val = -1.0;
+
+            _renderer.SetBezierz(val);
+        }
+
+        private void X_Slider_Scroll(object sender, EventArgs e)
+        {
+            double val = (X_Slider.Value / 100.0);
+            int id = ControlID.SelectedIndex;
+
+            val = -1.0 + 2 * val;
+
+            if (val > 1.0)
+                val = 1.0;
+            else if (val < -1.0)
+                val = -1.0;
+
+            _renderer.SetControlX(id, val);
+        }
+
+        private void Y_Slider_Scroll(object sender, EventArgs e)
+        {
+            double val = (Y_Slider.Value / 100.0);
+            int id = ControlID.SelectedIndex;
+
+            val = -1.0 + 2 * val;
+
+            if (val > 1.0)
+                val = 1.0;
+            else if (val < -1.0)
+                val = -1.0;
+
+            _renderer.SetControlY(id, val);
+        }
+
+        private void ControlID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int id = ControlID.SelectedIndex;
+
+            double x = _renderer.GetControlX(id);
+            double y = _renderer.GetControlY(id);
+
+            int xval = (int)((x + 1) * 50.0);
+            int yval = (int)((y + 1) * 50.0);
+
+            X_Slider.Value = xval;
+            Y_Slider.Value = yval;
+        }
+
+        private void Light_Color_Click(object sender, EventArgs e)
+        {
+            Color_Dialog.AllowFullOpen = true;
+            Color_Dialog.FullOpen = false;
+            Color_Dialog.SolidColorOnly = false;
+
+            if (Color_Dialog.ShowDialog() == DialogResult.OK)
+            {
+                Color selectedColor = Color_Dialog.Color;
+                _renderer.SetLightColor(ColorToPoint(selectedColor));
+            }
         }
     }
 }

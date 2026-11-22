@@ -213,6 +213,44 @@ namespace GK_Projekt2.Rendering
         {
             _meshes[id].SetNormal(bm);
         }
+
+        public void SetBezierz(double set)
+        {
+            _li.SetZ(set);
+        }
+
+        public double GetControlX(int id)
+        {
+            return _li.ControlPoints[id].X;
+        }
+
+        public double GetControlY(int id)
+        {
+            return _li.ControlPoints[id].Y;
+        }
+
+        public void SetControlX(int id,double set)
+        {
+            if (id == 0)
+            {
+                SetControlX(Constants.ControlPointsCount, set);
+            }
+            _li.ControlPoints[id].X = set;
+        }
+
+        public void SetControlY(int id,double set)
+        {
+            if(id == 0)
+            {
+                SetControlY(Constants.ControlPointsCount, set);
+            }
+            _li.ControlPoints[id].Y = set;
+        }
+
+        public void SetLightColor(Point<double> color)
+        {
+            _li.SetColor(color);
+        }
     }
 
 

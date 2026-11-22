@@ -47,6 +47,7 @@ namespace GK_Projekt2
             new Point<double>(-0.5,0.5,1)
             ];
 
+        public static int ControlPointsCount = 6;
 
         public static double MaxDistance = 1.5;
 

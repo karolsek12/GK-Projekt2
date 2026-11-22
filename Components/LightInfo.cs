@@ -49,5 +49,17 @@ namespace GK_Projekt2.Components
             _pos = Algorithms.BezierCalculation.GetPos(_controlPoints, t);
         }
 
+        public void SetZ(double z)
+        {
+            for (int i = 0; i < _controlPoints.Length; i++)
+            {
+                _controlPoints[i].Z = z;
+            }
+        }
+
+        public void SetColor(Point<double> color)
+        {
+            _il = color;
+        }
     }
 }
