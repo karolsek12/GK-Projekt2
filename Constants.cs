@@ -34,6 +34,8 @@ namespace GK_Projekt2
 
             ];
 
+        public static int MaxControlSurfacePoints = 16;
+
         public static int MaxControlDimension = 4;
 
         public static List<Point<double>> TestLightControlPoints = [
@@ -59,7 +61,7 @@ namespace GK_Projekt2
 
         public static double CycleTime = 10.0;
 
-        public static double StretchRatio = 1.5;
+        public static double StretchRatio = 2.0;
 
         public static double BezierStep = 0.05;
 

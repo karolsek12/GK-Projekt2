@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GK_Projekt2.Components;
 
 namespace GK_Projekt2.Algorithms
 {
+
     public static class FillTriangleVertexSort
     {
-        public struct ScanlineSpan
+        public readonly struct ScanlineSpan
         {
             public readonly int Y;
             public readonly int X1;
@@ -23,83 +21,171 @@ namespace GK_Projekt2.Algorithms
             }
         }
 
+        private sealed class Edge
+        {
+            public int LastY;      
+            public double X;       
+            public double Step;    
+        }
+
         public struct Enumerator
         {
-            private readonly Point<int> _p0, _p1, _p2;
-            private readonly int _width, _height;
-            private readonly int _ymin, _ymax, _ymid;
+            private readonly int _width;
+            private readonly int _yEnd;
+            private readonly List<Edge>?[] _buckets;
+            private readonly List<Edge> _active;
+            private readonly List<ScanlineSpan> _pending;
+
             private int _y;
+            private int _pendingIndex;
 
-            public Enumerator(DiscreteTriangle dt, int width, int height)
+            public ScanlineSpan Current { get; private set; }
+
+            public Enumerator(IReadOnlyList<Point<int>> vertices, int width, int height)
             {
-                Point<int> p0 = dt.A;
-                Point<int> p1 = dt.B;
-                Point<int> p2 = dt.C;
-
-                if (p0.Y > p1.Y) (p0, p1) = (p1, p0);
-                if (p1.Y > p2.Y) (p1, p2) = (p2, p1);
-                if (p0.Y > p1.Y) (p0, p1) = (p1, p0);
-
-                _p0 = p0;
-                _p1 = p1;
-                _p2 = p2;
                 _width = width;
-                _height = height;
-
-                _ymid = p1.Y;
-
-                _ymin = Math.Max(0, p0.Y);
-                _ymax = Math.Min(height - 1, p2.Y);
-
-                _y = _ymin - 1;
+                _active = new List<Edge>();
+                _pending = new List<ScanlineSpan>();
+                _buckets = new List<Edge>?[Math.Max(0, height)];
+                _pendingIndex = 0;
                 Current = default;
+
+                if (vertices == null || vertices.Count < 3 || width <= 0 || height <= 0)
+                {
+                    _y = 0;
+                    _yEnd = -1;
+                    return;
+                }
+
+                int minY = int.MaxValue;
+                int maxY = int.MinValue;
+
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    minY = Math.Min(minY, vertices[i].Y);
+                    maxY = Math.Max(maxY, vertices[i].Y);
+                }
+
+                _y = Math.Max(0, minY) - 1;
+                _yEnd = Math.Min(height - 1, maxY);
+
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    AddEdge(vertices[i], vertices[(i + 1) % vertices.Count]);
+                }
             }
 
-            public ScanlineSpan Current { get; set; }
+            public Enumerator(Point<int> a, Point<int> b, Point<int> c, int width, int height)
+            {
+                _width = width;
+                _active = new List<Edge>();
+                _pending = new List<ScanlineSpan>();
+                _buckets = new List<Edge>?[Math.Max(0, height)];
+                _pendingIndex = 0;
+                Current = default;
+
+                if (width <= 0 || height <= 0)
+                {
+                    _y = 0;
+                    _yEnd = -1;
+                    return;
+                }
+
+                int minY = Math.Min(a.Y, Math.Min(b.Y, c.Y));
+                int maxY = Math.Max(a.Y, Math.Max(b.Y, c.Y));
+
+                _y = Math.Max(0, minY) - 1;
+                _yEnd = Math.Min(height - 1, maxY);
+
+                AddEdge(a, b);
+                AddEdge(b, c);
+                AddEdge(c, a);
+            }
+
+            private void AddEdge(Point<int> from, Point<int> to)
+            {
+                if (from.Y == to.Y)
+                    return; 
+
+                if (from.Y > to.Y)
+                    (from, to) = (to, from);
+
+                int firstY = Math.Max(0, from.Y);
+                int lastY = Math.Min(_buckets.Length - 1, to.Y - 1);
+
+                if (firstY > lastY)
+                    return;
+
+                double step = (double)(to.X - from.X) / (to.Y - from.Y);
+                double x = from.X + step * (firstY - from.Y);
+
+                var edge = new Edge
+                {
+                    LastY = lastY,
+                    X = x,
+                    Step = step
+                };
+
+                (_buckets[firstY] ??= new List<Edge>()).Add(edge);
+            }
 
             public bool MoveNext()
             {
-                while (++_y <= _ymax)
+                while (true)
                 {
-                    int x1, x2;
-
-                    if (_y <= _ymid)
+                    if (_pendingIndex < _pending.Count)
                     {
-                        x1 = FastInterpolate(_p1, _p0, _y);
-                        x2 = FastInterpolate(_p2, _p0, _y);
-                    }
-                    else
-                    {
-                        x1 = FastInterpolate(_p1, _p2, _y);
-                        x2 = FastInterpolate(_p2, _p0, _y);
+                        Current = _pending[_pendingIndex++];
+                        return true;
                     }
 
-                    if (x1 > x2) (x1, x2) = (x2, x1);
+                    _y++;
+                    if (_y > _yEnd)
+                        return false;
 
-                    x1 = Math.Max(0, x1);
-                    x2 = Math.Min(_width - 1, x2);
+                    _pending.Clear();
 
-                    if (x1 > x2) continue; 
+                    List<Edge>? bucket = _buckets[_y];
+                    if (bucket != null)
+                    {
+                        _active.AddRange(bucket);
+                        _buckets[_y] = null;
+                    }
 
-                    Current = new ScanlineSpan(_y, x1, x2);
-                    return true;
+                    for (int i = _active.Count - 1; i >= 0; i--)
+                    {
+                        if (_active[i].LastY < _y)
+                            _active.RemoveAt(i);
+                    }
+
+                    if (_active.Count >= 2)
+                    {
+                        _active.Sort(static (e1, e2) => e1.X.CompareTo(e2.X));
+
+                        for (int i = 0; i + 1 < _active.Count; i += 2)
+                        {
+                            int x1 = (int)Math.Floor(_active[i].X);
+                            int x2 = (int)Math.Floor(_active[i + 1].X);
+
+                            if (x1 < 0) x1 = 0;
+                            if (x2 >= _width) x2 = _width - 1;
+                            if (x1 > x2) continue;
+
+                            _pending.Add(new ScanlineSpan(_y, x1, x2));
+                        }
+                    }
+
+                    foreach (Edge edge in _active)
+                        edge.X += edge.Step;
+
+                    _pendingIndex = 0;
                 }
-
-                return false;
             }
 
             public Enumerator GetEnumerator() => this;
         }
 
         public static Enumerator GetSpans(DiscreteTriangle dt, int width, int height)
-            => new Enumerator(dt, width, height);
-
-        private static int FastInterpolate(Point<int> p1, Point<int> p2, int y)
-        {
-            if (p1.Y == p2.Y) return p1.X;
-
-            double alpha = (double)(y - p2.Y) / (p1.Y - p2.Y);
-            return (int)(alpha * p1.X + (1.0 - alpha) * p2.X);
-        }
+            => new Enumerator(dt.A, dt.B, dt.C, width, height);
     }
 }

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             sidePanel = new Panel();
+            Light_Color = new Button();
             label9 = new Label();
             Y_Slider = new TrackBar();
             label8 = new Label();
@@ -62,7 +63,7 @@
             Color_Dialog = new ColorDialog();
             Open_Image = new OpenFileDialog();
             colorDialog1 = new ColorDialog();
-            Light_Color = new Button();
+            Bezier_File = new OpenFileDialog();
             sidePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Y_Slider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)X_Slider).BeginInit();
@@ -112,6 +113,16 @@
             sidePanel.Name = "sidePanel";
             sidePanel.Size = new Size(176, 700);
             sidePanel.TabIndex = 2;
+            // 
+            // Light_Color
+            // 
+            Light_Color.Location = new Point(3, 583);
+            Light_Color.Name = "Light_Color";
+            Light_Color.Size = new Size(75, 23);
+            Light_Color.TabIndex = 30;
+            Light_Color.Text = "Light Color";
+            Light_Color.UseVisualStyleBackColor = true;
+            Light_Color.Click += Light_Color_Click;
             // 
             // label9
             // 
@@ -439,15 +450,9 @@
             // 
             Open_Image.FileName = "Opened_Image";
             // 
-            // Light_Color
+            // Bezier_File
             // 
-            Light_Color.Location = new Point(3, 583);
-            Light_Color.Name = "Light_Color";
-            Light_Color.Size = new Size(75, 23);
-            Light_Color.TabIndex = 30;
-            Light_Color.Text = "Light Color";
-            Light_Color.UseVisualStyleBackColor = true;
-            Light_Color.Click += Light_Color_Click;
+            Bezier_File.FileName = "Open_Bezier_File";
             // 
             // Form1
             // 
@@ -510,5 +515,6 @@
         private Label label7;
         private ComboBox ControlID;
         private Button Light_Color;
+        private OpenFileDialog Bezier_File;
     }
 }

@@ -21,11 +21,7 @@ namespace GK_Projekt2
             InitializeComponent();
             _lastHit = null;
 
-            List<BezierSurface> surfaces = new List<BezierSurface>();
-
-            surfaces.Add(new BezierSurface(Constants.TestControlPoints));
-
-            _renderer = new Renderer(graphicsBox, surfaces);
+            _renderer = null!;
 
             graphicsBox.MouseDown += GraphicsBox_MouseDown;
             graphicsBox.MouseUp += GraphicsBox_MouseUp;
@@ -37,7 +33,31 @@ namespace GK_Projekt2
             };
 
             _timer.Tick += ClockTick;
-            _timer.Enabled = true;
+            
+
+            for (int i = 0; i < Constants.ControlPointsCount; i++)
+            {
+                ControlID.Items.Add($"{i}");
+            }
+
+            
+            Load += Form1_Load;
+
+            
+        }
+
+        private void Form1_Load(object? sender, EventArgs e)
+        {
+            List<List<Point<double>>>  l =ReadFile();
+
+            List<BezierSurface> surfaces = new List<BezierSurface>();
+
+            for(int i = 0; i < l.Count; i++)
+            {
+                surfaces.Add(new BezierSurface(l[i]));
+            }
+
+            _renderer = new Renderer(graphicsBox, surfaces);
 
             for (int i = 0; i < surfaces.Count; i++)
             {
@@ -45,11 +65,6 @@ namespace GK_Projekt2
             }
 
             CurveID.SelectedIndex = 0;
-
-            for (int i = 0; i < Constants.ControlPointsCount; i++)
-            {
-                ControlID.Items.Add($"{i}");
-            }
 
             ControlID.SelectedIndex = 0;
 
@@ -61,7 +76,30 @@ namespace GK_Projekt2
 
             X_Slider.Value = xval;
             Y_Slider.Value = yval;
+
+            _timer.Enabled = true;
+
         }
+
+        private List<List<Point<double>>> ReadFile()
+        {
+            if (Bezier_File.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    List<List<Point<double>>> list = BezierSurfaceReader.Read(Bezier_File.FileName);
+                    return list;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error.\n\nError message: {ex.Message}");
+                }
+
+            }
+            Close();
+            return [];
+        }
+
 
         private Color PointToColor(Point<double> c)
         {
