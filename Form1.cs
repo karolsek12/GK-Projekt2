@@ -33,26 +33,26 @@ namespace GK_Projekt2
             };
 
             _timer.Tick += ClockTick;
-            
+
 
             for (int i = 0; i < Constants.ControlPointsCount; i++)
             {
                 ControlID.Items.Add($"{i}");
             }
 
-            
+
             Load += Form1_Load;
 
-            
+
         }
 
         private void Form1_Load(object? sender, EventArgs e)
         {
-            List<List<Point<double>>>  l =ReadFile();
+            List<List<Point<double>>> l = ReadFile();
 
             List<BezierSurface> surfaces = new List<BezierSurface>();
 
-            for(int i = 0; i < l.Count; i++)
+            for (int i = 0; i < l.Count; i++)
             {
                 surfaces.Add(new BezierSurface(l[i]));
             }
@@ -357,6 +357,13 @@ namespace GK_Projekt2
                 Color selectedColor = Color_Dialog.Color;
                 _renderer.SetLightColor(ColorToPoint(selectedColor));
             }
+        }
+
+        private void documentationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DocumentationForm df = new DocumentationForm();
+
+            df.ShowDialog();
         }
     }
 }

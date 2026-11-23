@@ -64,6 +64,8 @@
             Open_Image = new OpenFileDialog();
             colorDialog1 = new ColorDialog();
             Bezier_File = new OpenFileDialog();
+            menuStrip1 = new MenuStrip();
+            documentationToolStripMenuItem = new ToolStripMenuItem();
             sidePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Y_Slider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)X_Slider).BeginInit();
@@ -74,6 +76,7 @@
             ((System.ComponentModel.ISupportInitialize)ks_slider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)graphicsBox).BeginInit();
             mainLayout.SuspendLayout();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // sidePanel
@@ -438,7 +441,7 @@
             mainLayout.Controls.Add(graphicsBox, 0, 0);
             mainLayout.Controls.Add(sidePanel, 1, 0);
             mainLayout.Dock = DockStyle.Fill;
-            mainLayout.Location = new Point(0, 0);
+            mainLayout.Location = new Point(0, 24);
             mainLayout.Margin = new Padding(0);
             mainLayout.Name = "mainLayout";
             mainLayout.RowCount = 1;
@@ -454,14 +457,32 @@
             // 
             Bezier_File.FileName = "Open_Bezier_File";
             // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { documentationToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(876, 24);
+            menuStrip1.TabIndex = 1;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // documentationToolStripMenuItem
+            // 
+            documentationToolStripMenuItem.Name = "documentationToolStripMenuItem";
+            documentationToolStripMenuItem.Size = new Size(102, 20);
+            documentationToolStripMenuItem.Text = "Documentation";
+            documentationToolStripMenuItem.Click += documentationToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(876, 700);
+            ClientSize = new Size(876, 724);
             Controls.Add(mainLayout);
-            MaximumSize = new Size(892, 739);
-            MinimumSize = new Size(892, 739);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
+            MaximumSize = new Size(892, 763);
+            MinimumSize = new Size(892, 763);
             Name = "Form1";
             Text = "Form1";
             sidePanel.ResumeLayout(false);
@@ -475,7 +496,10 @@
             ((System.ComponentModel.ISupportInitialize)ks_slider).EndInit();
             ((System.ComponentModel.ISupportInitialize)graphicsBox).EndInit();
             mainLayout.ResumeLayout(false);
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -516,5 +540,7 @@
         private ComboBox ControlID;
         private Button Light_Color;
         private OpenFileDialog Bezier_File;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem documentationToolStripMenuItem;
     }
 }
