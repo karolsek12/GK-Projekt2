@@ -73,7 +73,7 @@ namespace GK_Projekt2.Rendering
                 DiscreteTriangle dt = new DiscreteTriangle(ToDiscrete(t.A), ToDiscrete(t.B), ToDiscrete(t.C));
                 t.PreCalcFull(dt);
 
-                List<Point<int>> points = FillTriangleVertexSort.FillTriangle(dt);
+                List<Point<int>> points = FillTriangleVertexSort.GetPoints(dt,_width,_height);
 
                 for (int i = 0; i < points.Count; i++)
                 {

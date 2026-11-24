@@ -90,7 +90,6 @@ namespace GK_Projekt2.Rendering
 
         public void Render()
         {
-            s.Start();
             if (_moveLight)
             {
                 double dt = _lightWatch.Elapsed.TotalSeconds;

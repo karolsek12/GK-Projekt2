@@ -484,7 +484,7 @@
             MaximumSize = new Size(892, 763);
             MinimumSize = new Size(892, 763);
             Name = "Form1";
-            Text = "Form1";
+            Text = "GK2";
             sidePanel.ResumeLayout(false);
             sidePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)Y_Slider).EndInit();
