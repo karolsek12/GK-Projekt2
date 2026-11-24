@@ -18,6 +18,7 @@ namespace GK_Projekt2.Rendering
 
         private Point<double>[] _colors;
         private double[] _zBuffer;
+        private object[] _locks;
 
         private bool _fillTriangles;
         private bool _drawMesh;
@@ -30,6 +31,10 @@ namespace GK_Projekt2.Rendering
             _height = height;
             _colors = new Point<double>[width*height];
             _zBuffer = new double[width*height];
+            _locks = new object[width*height];
+
+            Array.Fill(_locks, new object());
+
             _fillTriangles = true;
             _drawMesh = true;
             _drawPoly = true;
@@ -59,52 +64,60 @@ namespace GK_Projekt2.Rendering
 
         private void FillTriangles(Mesh mesh, LightInfo li)
         {
-            foreach (Triangle t in mesh.Triangles)
+            List<Triangle> triangles = mesh.Triangles;
+
+            Parallel.For(0, triangles.Count, (j) =>
+
             {
+                Triangle t = triangles[j];
                 DiscreteTriangle dt = new DiscreteTriangle(ToDiscrete(t.A), ToDiscrete(t.B), ToDiscrete(t.C));
                 t.PreCalcFull(dt);
 
-                foreach (FillTriangleVertexSort.ScanlineSpan span in
-                         FillTriangleVertexSort.GetSpans(dt, _width, _height))
+                List<Point<int>> points = FillTriangleVertexSort.FillTriangle(dt);
+
+                for (int i = 0; i < points.Count; i++)
                 {
-                    int y = span.Y;
+                    int y = points[i].Y;
+                    int x = points[i].X;
 
-                    for (int x = span.X1; x <= span.X2; x++)
+                    t.Interpolate(x, y, dt);
+
+                    int id = y * _width + x;
+
+                    double z = t.InterpolateZ();
+
+                    double u = t.InterpolateU();
+                    double v = t.InterpolateV();
+                    Vector<double> normal = t.InterpolateNormal();
+
+                    if (mesh.NormalInfo != null)
                     {
-                        t.Interpolate(x, y, dt);
+                        Vector<double> tu = t.InterpolateTangentu();
+                        Vector<double> tv = t.InterpolateTangentv();
 
-                        int id = y * _width + x;
+                        normal = mesh.NormalInfo.GetNormal(u, v, tu, tv, normal);
+                    }
 
-                        double z = t.InterpolateZ();
-
-                        double u = t.InterpolateU();
-                        double v = t.InterpolateV();
-                        Vector<double> normal = t.InterpolateNormal();
-
-                        if(mesh.NormalInfo!= null)
-                        {
-                            Vector<double> tu = t.InterpolateTangentu();
-                            Vector<double> tv = t.InterpolateTangentv();
-
-                            normal = mesh.NormalInfo.GetNormal(u, v, tu, tv, normal);
-                        }
-
-                        if (z >= _zBuffer[id])
-                        {
-                            _zBuffer[id] = z;
-
-                            _colors[id] = LightCalculation.GetColor(
+                    Point<double> col = LightCalculation.GetColor(
                                 t.InterpolatePos(),
                                 u,
                                 v,
                                 normal,
                                 mesh.CI, li);
+
+                    lock (_locks[id])
+                    {
+                        if (z >= _zBuffer[id])
+                        {
+                            _zBuffer[id] = z;
+
+                            _colors[id] = col;
                         }
-
-
                     }
+
+
                 }
-            }
+            });
         }
 
         private void Drawline(Point<int> da, Point<int> db, Point<double> a, Point<double> b,Point<double> color)

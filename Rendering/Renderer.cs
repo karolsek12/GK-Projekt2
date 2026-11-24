@@ -90,6 +90,8 @@ namespace GK_Projekt2.Rendering
 
         public void Render()
         {
+            Stopwatch s = new Stopwatch();
+            s.Start();
             if (_moveLight)
             {
                 double dt = _lightWatch.Elapsed.TotalSeconds;
@@ -106,6 +108,7 @@ namespace GK_Projekt2.Rendering
             Flip();
             _box.Image = GetCurrentBitmap();
             _box.Invalidate();
+            s.Stop();
         }
 
         public void SetRotation(double alpha,double beta, double gamma)
