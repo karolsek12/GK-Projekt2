@@ -90,11 +90,18 @@ namespace GK_Projekt2.Rendering
                     double v = t.InterpolateV();
                     Vector<double> normal = t.InterpolateNormal();
 
+                    Vector<double> tu = default;
+                    Vector<double> tv = default;
+                    bool needTangents = mesh.NormalInfo != null || mesh.BumpInfo != null;
+
+                    if (needTangents)
+                    {
+                        tu = t.InterpolateTangentu();
+                        tv = t.InterpolateTangentv();
+                    }
+
                     if (mesh.NormalInfo != null)
                     {
-                        Vector<double> tu = t.InterpolateTangentu();
-                        Vector<double> tv = t.InterpolateTangentv();
-
                         normal = mesh.NormalInfo.GetNormal(u, v, tu, tv, normal);
                     }
 
@@ -103,7 +110,11 @@ namespace GK_Projekt2.Rendering
                                 u,
                                 v,
                                 normal,
-                                mesh.CI, li);
+                                mesh.CI,
+                                li,
+                                mesh.BumpInfo,
+                                tu,
+                                tv);
 
                     lock (_locks[id])
                     {
@@ -185,39 +196,43 @@ namespace GK_Projekt2.Rendering
                 Drawline(ToDiscrete(points[i]), ToDiscrete(points[i - 1]), points[i], points[i - 1], new Point<double>(0.0, 0.0, 0.0));
             }
 
-            Point<int> pos = ToDiscrete(li.Pos);
-            List<Point<int>> star = new List<Point<int>>();
+            for (int j = 0; j < li.GetAmount(); j++)
+            {
+                Point<int> pos = ToDiscrete(li.Pos[j]);
+                List<Point<int>> star = new List<Point<int>>();
 
-            star.Add(pos);
+                star.Add(pos);
 
-            if(pos.X -1 >= 0)
-            {
-                star.Add(new Point<int>(pos.X - 1, pos.Y,0));
-            }
-            if(pos.Y -1 >= 0)
-            {
-                star.Add(new Point<int>(pos.X, pos.Y-1, 0));
-            }
-            if (pos.X + 1 < _width)
-            {
-                star.Add(new Point<int>(pos.X + 1, pos.Y, 0));
-            }
-            if (pos.Y +1  < 0)
-            {
-                star.Add(new Point<int>(pos.X, pos.Y + 1, 0));
-            }
-            double z = li.Pos.Z;
-            for (int i = 0; i < star.Count; i++)
-            {
-                
-                int id = star[i].Y * _width + star[i].X;
-
-                if (z >= _zBuffer[id])
+                if (pos.X - 1 >= 0)
                 {
-                    _zBuffer[id] = z;
-
-                    _colors[id] = new Point<double>(1.0,0,0);
+                    star.Add(new Point<int>(pos.X - 1, pos.Y, 0));
                 }
+                if (pos.Y - 1 >= 0)
+                {
+                    star.Add(new Point<int>(pos.X, pos.Y - 1, 0));
+                }
+                if (pos.X + 1 < _width)
+                {
+                    star.Add(new Point<int>(pos.X + 1, pos.Y, 0));
+                }
+                if (pos.Y + 1 < 0)
+                {
+                    star.Add(new Point<int>(pos.X, pos.Y + 1, 0));
+                }
+                double z = li.Pos[j].Z;
+                for (int i = 0; i < star.Count; i++)
+                {
+
+                    int id = star[i].Y * _width + star[i].X;
+
+                    if (z >= _zBuffer[id])
+                    {
+                        _zBuffer[id] = z;
+
+                        _colors[id] = new Point<double>(1.0, 0, 0);
+                    }
+                }
+
             }
 
         }

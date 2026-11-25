@@ -71,5 +71,7 @@ namespace GK_Projekt2
 
         public static int InitTriangles = 20;
 
+        public static double KBumpMap = 0.5;
+
     }
 }

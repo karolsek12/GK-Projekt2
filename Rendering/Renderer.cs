@@ -214,6 +214,21 @@ namespace GK_Projekt2.Rendering
             _meshes[id].SetNormal(bm);
         }
 
+        public void RemoveBump(int id)
+        {
+            _meshes[id].RemoveBump();
+        }
+
+        public bool CheckHasBump(int id)
+        {
+            return _meshes[id].BumpInfo != null;
+        }
+
+        public void SetBump(Bitmap bm, int id)
+        {
+            _meshes[id].SetBump(bm);
+        }
+
         public void SetBezierz(double set)
         {
             _li.SetZ(set);
@@ -250,6 +265,26 @@ namespace GK_Projekt2.Rendering
         public void SetLightColor(Point<double> color)
         {
             _li.SetColor(color);
+        }
+
+        public void SetLightAmount(int amount)
+        {
+            _li.SetAmount(amount);
+        }
+
+        public void SetDirected(bool val)
+        {
+            _li.SetDirected(val);
+        }
+
+        public void SetReflectors(bool val)
+        {
+            _li.SetReflectors(val);
+        }
+
+        public void SetReflectorM(int val)
+        {
+            _li.SetM(val);
         }
     }
 

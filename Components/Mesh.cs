@@ -13,6 +13,7 @@ namespace GK_Projekt2.Components
         private List<Point<double>> _controlPoints;
         private List<Point<double>> _controlPointsAfter;
         private NormalInfo? _normalInfo;
+        private BumpInfo? _bumpInfo;
 
         public Mesh(List<Triangle> triangles, List<Point<double>> controlPoints, ColorInfo ci)
         {
@@ -21,6 +22,7 @@ namespace GK_Projekt2.Components
             _controlPoints = controlPoints;
             _controlPointsAfter = new List<Point<double>>(controlPoints);
             _normalInfo = null;
+            _bumpInfo = null;
         }
 
         public List<Triangle> Triangles
@@ -88,6 +90,32 @@ namespace GK_Projekt2.Components
             }
 
             _normalInfo = new NormalInfo(bitmap);
+        }
+
+        public BumpInfo? BumpInfo
+        {
+            get
+            {
+                return _bumpInfo;
+            }
+        }
+
+        public void RemoveBump()
+        {
+            if (_bumpInfo != null)
+            {
+                _bumpInfo.Dispose();
+                _bumpInfo = null;
+            }
+        }
+        public void SetBump(Bitmap bitmap)
+        {
+            if (_bumpInfo != null)
+            {
+                RemoveBump();
+            }
+
+            _bumpInfo = new BumpInfo(bitmap, Constants.KBumpMap);
         }
     }
 }

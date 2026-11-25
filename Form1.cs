@@ -43,6 +43,14 @@ namespace GK_Projekt2
 
             Load += Form1_Load;
 
+            Light_Amount.Items.Add("1");
+            Light_Amount.Items.Add("2");
+            Light_Amount.Items.Add("3");
+            Light_Amount.Items.Add("4");
+
+            Light_Type.Items.Add("Directed");
+            Light_Type.Items.Add("Point lights");
+            Light_Type.Items.Add("Reflectors");
 
         }
 
@@ -78,7 +86,10 @@ namespace GK_Projekt2
             Y_Slider.Value = yval;
 
             _timer.Enabled = true;
+            Light_Amount.SelectedIndex = 0;
+            Light_Type.SelectedIndex = 1;
 
+            Del_Bump.Enabled = false;
         }
 
         private List<List<Point<double>>> ReadFile()
@@ -226,6 +237,7 @@ namespace GK_Projekt2
         {
             int id = CurveID.SelectedIndex;
             Del_Normal.Enabled = _renderer.CheckHasNormal(id);
+            Del_Bump.Enabled = _renderer.CheckHasBump(id);
         }
 
         private void Color_Button_Click(object sender, EventArgs e)
@@ -263,13 +275,16 @@ namespace GK_Projekt2
         private void Set_Normal_Click(object sender, EventArgs e)
         {
             int id = CurveID.SelectedIndex;
+
             if (Open_Image.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
                     Bitmap bitmap = new Bitmap(Open_Image.FileName);
                     _renderer.SetNormal(bitmap, id);
+                    _renderer.RemoveBump(id);
                     Del_Normal.Enabled = true;
+                    Del_Bump.Enabled = false;
 
                 }
                 catch (Exception ex)
@@ -364,6 +379,67 @@ namespace GK_Projekt2
             DocumentationForm df = new DocumentationForm();
 
             df.ShowDialog();
+        }
+
+        private void Light_Amount_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int amount = Light_Amount.SelectedIndex + 1;
+            _renderer.SetLightAmount(amount);
+        }
+
+        private void Light_Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int id = Light_Type.SelectedIndex;
+            _renderer.SetDirected(false);
+            _renderer.SetReflectors(false);
+
+            switch (id)
+            {
+                case 0:
+                    _renderer.SetDirected(true);
+                    break;
+                case 1:
+                    return;
+                case 2:
+                    _renderer.SetReflectors(true);
+                    return;
+            }
+        }
+
+        private void Reflect_M_Scroll(object sender, EventArgs e)
+        {
+            int n = Reflect_M.Value;
+            _renderer.SetReflectorM(n);
+        }
+        private void Bump_Button_Click(object sender, EventArgs e)
+        {
+            int id = CurveID.SelectedIndex;
+
+            if (Open_Image.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Bitmap bitmap = new Bitmap(Open_Image.FileName);
+                    _renderer.SetBump(bitmap,id);
+                    _renderer.RemoveNormal(id);
+                    Del_Normal.Enabled = false;
+                    Del_Bump.Enabled = true;
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error.\n\nError message: {ex.Message}");
+                }
+            }
+        }
+        
+        private void Del_Bump_Click(object sender, EventArgs e)
+        {
+            int id = CurveID.SelectedIndex;
+
+            _renderer.RemoveBump(id);
+
+            Del_Bump.Enabled = true;
         }
     }
 }
